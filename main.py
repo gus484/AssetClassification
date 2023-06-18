@@ -40,9 +40,12 @@ class App:
         for isin in isin_filter:
             self.lb_isin.insert(END, isin)
 
-        self.mapping_path.set(self.config.get("mapping", ""))
-        self.input_path.set(self.config.get("input", ""))
-        self.report_path.set(self.config.get("report", ""))
+        if os.path.exists(self.config.get("mapping")):
+            self.mapping_path.set(self.config.get("mapping"))
+        if os.path.exists(self.config.get("input", "")):
+            self.input_path.set(self.config.get("input", ""))
+        if os.path.exists(self.config.get("report", "")):
+            self.report_path.set(self.config.get("report", ""))
 
     def write_config(self):
         self.config['isin'] = self.lb_isin.get(0, END)
