@@ -1,5 +1,6 @@
 import json
 import os
+from ac import AssetAllocation
 from json import JSONDecodeError
 from tkinter import *
 from tkinter import filedialog
@@ -169,6 +170,9 @@ class App:
 
     def run_script(self):
         self.write_config()
+        ac = AssetAllocation()
+        ac.set_parameters(self.input_path.get(), self.report_path.get(), ['IE00B3XXRP09', 'IE00B8GKDB10'], self.mapping_path.get(), 'de')
+        ac.run()
 
 
 if __name__ == '__main__':

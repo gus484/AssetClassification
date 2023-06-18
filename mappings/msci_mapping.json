@@ -1,0 +1,8 @@
+{
+  "DW Asien/Pazifik": ["AUS","HKG", "JPN", "NZL", "SGP"],
+  "DW Amerika": ["CAN", "US"],
+  "DW Europa/Naher Osten": ["AUS", "BEL", "CHE", "DEU", "DNK", "ESP", "FIN", "FRA", "GBR", "IRL", "ISR", "ITA", "LUX", "NLD", "NOR", "PRT", "SWE"],
+  "EM Amerika": ["BRA", "CHL", "COL", "MEX", "PER"],
+  "EM Europa/Naher Osten": ["ARE", "CZE", "EGY", "GRC", "HUN", "KWT", "POL", "SAU", "QAT", "TUR", "ZAF"],
+  "EM Asien/Pazifik": ["CHN", "IDN", "IND", "KOR", "MYS", "PHL", "THA", "TWN"]
+}
