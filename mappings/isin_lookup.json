@@ -1,0 +1,17 @@
+ {
+    "ISHARES": {
+        "EIMU_holdings.csv": "IE00BD45KH83",
+        "IUSN_holdings.csv": "IE00BF4RFH31",
+        "EUNM_holdings.csv": "IE00B4L5YC18"
+    },
+    "VANGUARD": {
+        "FTSE All-World High Dividend Yield UCITS ETF - (USD) Distributing": "IE00B8GKDB10",
+        "FTSE Developed Asia Pacific ex Japan UCITS ETF - (USD) Distributing": "IE00B9F5YL18",
+        "FTSE Japan UCITS ETF - (USD) Distributing": "IE00B95PGT31",
+        "FTSE Developed Europe UCITS ETF - (EUR) Distributing": "IE00B945VV12",
+        "S&P 500 UCITS ETF - (USD) Distributing": "IE00B3XXRP09"
+    },
+    "VANECK": {
+        "TDIV": "NL0011683594"
+    }
+}
