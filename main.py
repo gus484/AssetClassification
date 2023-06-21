@@ -171,10 +171,16 @@ class App:
         if mapping_path != "":
             self.mapping_path.set(mapping_path)
 
+    def get_isin_filter(self):
+        isin_list = []
+        for isin in self.lb_isin.get(0, END):
+            isin_list.append(isin[0])
+        return isin_list
+
     def run_script(self):
         self.write_config()
         ac = AssetAllocation()
-        ac.set_parameters(self.input_path.get(), self.report_path.get(), ['IE00B3XXRP09', 'IE00B8GKDB10'], self.mapping_path.get(), 'de')
+        ac.set_parameters(self.input_path.get(), self.report_path.get(), self.get_isin_filter(), self.mapping_path.get(), 'de')
         ac.run()
 
 
