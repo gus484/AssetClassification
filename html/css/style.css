@@ -1,0 +1,207 @@
+body {
+    background: linear-gradient(to right, #EA384D, #D31027);
+    background-attachment: fixed;
+}
+
+a {
+    color: #003399;
+    text-decoration: none;
+}
+
+a:hover {
+    color: crimson;
+}
+
+/* NAV ---------------------------------*/
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+nav li {
+    float: left;
+    border-right: 1px solid #bbb;
+}
+
+nav li:last-child {
+    border-right: none;
+}
+
+nav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+nav li a:hover {
+    background-color: #111;
+}
+
+.active {
+    background-color: firebrick;
+}
+
+/* FLEX --------------------------------*/
+.info_container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+.info_box {
+    background: #660000;
+    color: #FFF;
+    border-radius: 10px;
+}
+
+.info_box div {
+    padding: 10px;
+    font-family: OpenSans-Regular;
+    font-size: 18px;
+    color: #FFF;
+}
+
+.info_box div:nth-child(2) {
+    background: #FFF;
+    font-size: 15px;
+    color: gray;
+    border-radius: 0 0  10px 10px;
+}
+
+/* TOC ---------------------------------*/
+
+#toc_container {
+    background: #f9f9f9 none repeat scroll 0 0;
+    border: 1px solid #223344;
+    display: table;
+    font-size: 95%;
+    margin-bottom: 1em;
+    padding: 20px;
+    width: auto;
+}
+
+.toc_title {
+    font-weight: 700;
+    text-align: center;
+}
+
+#toc_container li, #toc_container ul, #toc_container ul li{
+    list-style: square;
+}
+/* CHARTS ------------------------------*/
+.chart_box {
+    height: 300px;
+    margin-bottom: 1em
+}
+
+/* TABLE -------------------------------*/
+
+table {
+    border-spacing: 1;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    margin-bottom: 1em;
+}
+
+table caption {
+    font-family: OpenSans-Regular;
+    padding: 5px 0;
+    font-size: 12px;
+    color: #FFF;
+    line-height: 1.2;
+    font-weight: unset;
+    caption-side: bottom;
+}
+
+table thead tr {
+    height: 60px;
+    background: #660000;
+}
+
+table thead th {
+    font-family: OpenSans-Regular;
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.2;
+    font-weight: unset;
+}
+
+table tbody tr {
+    height: 50px;
+}
+
+tbody tr {
+    font-family: OpenSans-Regular;
+    font-size: 15px;
+    color: gray;
+    line-height: 1.2;
+    font-weight: unset;
+}
+
+table td, table th {
+    text-align: left;
+}
+
+tbody tr:nth-child(2n) {
+    background-color: #f5f5f5;
+}
+
+table tr td:first-child, table tr th:first-child {
+    padding-left: 40px;
+}
+
+/* ----------- */
+.caret {
+    cursor: pointer;
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none;
+}
+
+.caret::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.caret-down::before {
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -webkit-transform: rotate(90deg); /* Safari */
+    transform: rotate(90deg);
+}
+
+/* ------------------------------------------ */
+
+.container {
+    padding: 5px;
+    background: #FFF;
+    border-radius: 10px
+}
+
+.about {
+    width: 100%;
+    text-align: center;
+    margin: 5px auto;
+}
+
+.about a {
+    color: #eee;
+}

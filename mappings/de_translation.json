@@ -1,0 +1,11 @@
+{
+  "name": "Name",
+  "isin": "ISIN",
+  "weight": "Gewichtung",
+  "cluster_risk": "Klumpen",
+  "nbr_of_holdings": "Anz. Positionen",
+  "nbr_of_etf_clusters": "Anz. Klumpen ETF",
+  "nbr_of_cluster_positions": "Klumpen",
+  "last_update": "Datum",
+  "count": "Anzahl"
+}

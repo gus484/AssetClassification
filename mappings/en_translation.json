@@ -1,0 +1,10 @@
+{
+  "name": "Name",
+  "isin": "ISIN",
+  "weight": "Weight",
+  "cluster_risk": "Cluster",
+  "nbr_of_holdings": "Number of holdings",
+  "nbr_of_etf_clusters": "Number of cluster ETFs",
+  "last_update": "Date",
+  "count": "Count"
+}
