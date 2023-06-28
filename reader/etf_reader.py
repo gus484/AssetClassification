@@ -1,11 +1,14 @@
 import abc
 import json
 import locale
+import logging
 import os.path
 
 from report.region import Region
 
 locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
+
+log = logging.getLogger("__main__")
 
 
 class EtfReader:
@@ -41,6 +44,10 @@ class EtfReader:
 
     @staticmethod
     def read_json(path):
+        if not os.path.exists(path):
+            log.warning(f"No region mapping found:{path}")
+            return {}
+
         with open(path, 'r', encoding="utf-8") as f:
             return json.load(f)
 

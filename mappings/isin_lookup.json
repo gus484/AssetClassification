@@ -1,8 +1,9 @@
- {
+{
     "ISHARES": {
         "EIMU_holdings.csv": "IE00BD45KH83",
         "IUSN_holdings.csv": "IE00BF4RFH31",
-        "EUNM_holdings.csv": "IE00B4L5YC18"
+        "EUNM_holdings.csv": "IE00B4L5YC18",
+        "IUSQ_holdings.csv": "IE00B6R52259"
     },
     "VANGUARD": {
         "FTSE All-World High Dividend Yield UCITS ETF - (USD) Distributing": "IE00B8GKDB10",
