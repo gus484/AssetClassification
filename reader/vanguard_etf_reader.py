@@ -2,13 +2,13 @@ from datetime import datetime
 from locale import atof
 
 from reader.asset import Asset, Value
-from reader.etf_reader import EtfReader
+from reader.etf_reader import EtfReader, FundFamily
 
 
 class VanguardEtfReader(EtfReader):
-    def __init__(self, sheet):
+    def __init__(self, fpath, sheet=None):
         super().__init__(sheet)
-        self.fund_family = 'VANGUARD'
+        self.fund_family = FundFamily.VANGUARD.value
         self.last_update = ''
         self.header_name = 'Wertpapiere'
         self.header_weight = '% der Assets'

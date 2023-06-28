@@ -3,12 +3,19 @@ import json
 import locale
 import logging
 import os.path
+from enum import Enum
 
 from report.region import Region
 
 locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
 
 log = logging.getLogger("__main__")
+
+
+class FundFamily(Enum):
+    ISHARES = 'ISHARES'
+    VANECK = 'VANECK'
+    VANGUARD = 'VANGUARD'
 
 
 class EtfReader:
