@@ -1,6 +1,8 @@
 import datetime
 
+from report.region import Gpo
 from report.report import Report
+from report.translation import Translation
 
 
 class AboutReport(Report):
@@ -10,7 +12,9 @@ class AboutReport(Report):
 
     def create(self, version):
         self.doc.write_infobox([['Version', version],
-                                ['Created', datetime.datetime.now()]])
+                                ['Created', datetime.datetime.now()],
+                                ['Mapping', Gpo.mapping_file_path],
+                                ['Translation', Translation.path]])
 
         self.write_libs()
 
