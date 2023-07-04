@@ -14,7 +14,7 @@ from report.report_factory import ReportFactory
 from report.translation import Translation
 
 locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
-log = logging.getLogger(__name__)
+log = logging.getLogger("ac")
 
 
 def setup_logger():
@@ -53,8 +53,7 @@ class AssetAllocation:
         if self.idirectory is None or not os.path.exists(self.idirectory):
             log.error('input directory not exists %s', self.idirectory)
             return
-
-        self.assets = EtfReaderFactory.read_files_from_path(self.idirectory, self.isin_filter)
+        self.assets = EtfReaderFactory.read_etfs_from_path(self.idirectory, self.isin_filter)
         return self.assets
 
     def merge_holdings(self):

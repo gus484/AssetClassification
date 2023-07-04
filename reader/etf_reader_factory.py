@@ -1,34 +1,59 @@
 import glob
-import os
+import logging
+import re
+from pathlib import Path
 
-from openpyxl.reader.excel import load_workbook
-
+from reader.etf_reader import FundFamily
 from reader.ishares_etf_reader import ISharesEtfReader
+from reader.vaneck_etf_reader import VanEckEtfReader
 from reader.vanguard_etf_reader import VanguardEtfReader
+
+log = logging.getLogger("ac")
 
 
 class EtfReaderFactory:
+    READERS = {
+        FundFamily.ISHARES: (ISharesEtfReader.REGEX, ISharesEtfReader),
+        FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
+        FundFamily.VANGUARD: (VanguardEtfReader.REGEX, VanguardEtfReader)
+    }
 
     @staticmethod
-    def get_reader(fpath, ext):
-        if ext == '*.csv':
-            reader = ISharesEtfReader(fpath)
-        elif ext == '*.xlsx':
-            wb = load_workbook(filename=fpath)
-            sheet = wb.active
-            reader = VanguardEtfReader(sheet)
+    def get_reader(fpath):
+        reader = None
+        file_name = Path(fpath).name
+
+        for k, v in EtfReaderFactory.READERS.items():
+            if re.search(v[0], file_name) is not None:
+                log.info(f"{k} => {file_name}")
+                reader = v[1](fpath)
+                break
         return reader
 
     @staticmethod
-    def read_files_from_path(path, isin_filter):
-        assets = {}
-        extensions = ('*.xlsx', '*.csv')
-        for ext in extensions:
-            for f in glob.glob(os.path.join(path, ext)):
-                r = EtfReaderFactory.get_reader(f, ext)
-                r.read_asset()
-                r.read_sheet()
-                if r.isin not in isin_filter and len(isin_filter) > 0:
-                    continue
-                assets[r.isin] = r.asset
-        return assets
+    def read_etfs_from_path(path, isin_filter):
+        etfs = {}
+        file_list = glob.glob(path + '/*')
+        for file in file_list:
+            try:
+                etf = EtfReaderFactory.read_etf_from_file(file, isin_filter)
+                if etf is not None:
+                    etfs[etf.isin] = etf
+            except Exception as e:
+                log.warning(f"Could not read file:{file}", e)
+
+        return etfs
+
+    @staticmethod
+    def read_etf_from_file(fpath: str, isin_filter: list[str]):
+        r = EtfReaderFactory.get_reader(fpath)
+
+        if r is None:
+            return None
+
+        r.read_asset()
+        if r.isin not in isin_filter and len(isin_filter) > 0:
+            return None
+
+        r.read_sheet()
+        return r.asset

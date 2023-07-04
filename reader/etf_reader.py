@@ -5,6 +5,8 @@ import logging
 import os.path
 from enum import Enum
 
+from openpyxl.reader.excel import load_workbook
+
 from report.region import Region
 
 locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
@@ -23,11 +25,11 @@ class EtfReader:
     ISIN_TO_NAME_LOOKUP = None
     REGION_MAPPING = {}
 
-    def __init__(self, sheet):
+    def __init__(self, fpath):
         self.name = ''
-        self.isin = ''
-        self.sheet = sheet
+        self.fpath = fpath
         self.asset = None
+        self.sheet = None
         self.values = []
 
     def update_region(self, region, weight):
@@ -36,6 +38,10 @@ class EtfReader:
         else:
             self.asset.regions[region].weight += weight
             self.asset.regions[region].num_of_countries += 1
+
+    def read_sheet_from_wb(self):
+        wb = load_workbook(filename=self.fpath)
+        self.sheet = wb.active
 
     @staticmethod
     def get_isin_from_file_name(fund_family, name):
