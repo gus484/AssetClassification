@@ -26,8 +26,8 @@ class VanguardEtfReader(EtfReader):
         date_obj = datetime.strptime(last_update, date_format)
         last_update = date_obj.strftime('%d.%m.%Y')
 
-        isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
-        self.asset = Asset(name, isin, 0.0, last_update, [])
+        self.isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
+        self.asset = Asset(name, self.isin, 0.0, last_update, [])
 
     def read_sheet(self):
         for i in range(self.start_row, self.sheet.max_row):

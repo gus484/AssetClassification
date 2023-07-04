@@ -52,6 +52,7 @@ class EtfReaderFactory:
             return None
 
         r.read_asset()
+
         if r.isin not in isin_filter and len(isin_filter) > 0:
             return None
 

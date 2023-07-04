@@ -31,6 +31,7 @@ class EtfReader:
         self.asset = None
         self.sheet = None
         self.values = []
+        self.isin = ''
 
     def update_region(self, region, weight):
         if region not in self.asset.regions:

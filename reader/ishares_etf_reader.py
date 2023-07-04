@@ -31,9 +31,9 @@ class ISharesEtfReader(EtfReader):
         date_obj = datetime.strptime(last_update, date_format)
         last_update = date_obj.strftime('%d.%m.%Y')
 
-        isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
-        name = EtfReader.get_name_from_isin(self.fund_family, isin)
-        self.asset = Asset(name, isin, 0.0, last_update, [])
+        self.isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
+        name = EtfReader.get_name_from_isin(self.fund_family, self.isin)
+        self.asset = Asset(name, self.isin, 0.0, last_update, [])
 
     def read_sheet(self):
         with open(self.fpath, newline='', encoding="utf8") as csvfile:
