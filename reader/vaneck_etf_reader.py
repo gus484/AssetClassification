@@ -16,7 +16,7 @@ class VanEckEtfReader(EtfReader):
         self.start_row = 4
         self.name_col = 2
         self.ticker_col = 3
-        self.region_col = 3
+        self.region_col = 4
         self.weight_col = 7
         self.file_name = os.path.basename(self.fpath)
         self.read_sheet_from_wb()
@@ -43,7 +43,7 @@ class VanEckEtfReader(EtfReader):
             weight = atof(weight.replace("%", "").replace("\xa0", ""))
             ticker = self.sheet.cell(i, self.ticker_col).value
             region = self.sheet.cell(i, self.region_col).value
-            region = region.split(" ")[1]
+            region = region[:2]
             region = EtfReader.get_region_code(FundFamily.VANGUARD.value, region)
             a = Value(name, weight, weight, ticker, region)
 

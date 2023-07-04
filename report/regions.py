@@ -59,8 +59,9 @@ class RegionReport(Report):
 
         top_lvl = lmapping[0]
         if top_lvl == 'Welt':
-            pass
-            # print(asset_region)
+            name = region.RegionMapping.get_name(asset_region.short)
+            if name != 'Welt':
+                lmapping[1] = name
 
         if top_lvl not in gpo:
             gpo[top_lvl] = [[top_lvl, Decimal(asset_region.weight), asset_region.num_of_countries], [[
