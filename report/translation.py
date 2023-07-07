@@ -1,8 +1,9 @@
 import json
 import logging
 import os.path
+from json import JSONDecodeError
 
-log = logging.getLogger("__main__")
+log = logging.getLogger("ac")
 
 
 class Translation:
@@ -23,8 +24,12 @@ class Translation:
             return
 
         with open(Translation.path, 'r', encoding="utf-8") as f:
-            Translation.mapping = json.load(f)
-            log.debug("loaded translation from file: '%s'", Translation.path)
+            try:
+                Translation.mapping = json.load(f)
+                log.debug("loaded translation from file: '%s'", Translation.path)
+            except JSONDecodeError:
+                log.error(f"Could not read language file:{Translation.path}")
+                Translation.mapping = {}
 
     @staticmethod
     def set_language(lang):

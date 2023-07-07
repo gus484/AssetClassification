@@ -1,14 +1,22 @@
-import logging
 import json
+import logging
 import os.path
 import pprint
 from dataclasses import dataclass
+from json import JSONDecodeError
 
-log = logging.getLogger("__main__")
+log = logging.getLogger("ac")
 
 
 class RegionMapping:
     mapping = None
+    mapping_file_path = "mappings/de_region_names.json"
+
+    @staticmethod
+    def set_path_to_mapping_file(path):
+        path = f"mappings/{path}_region_names.json"
+        if os.path.exists(path):
+            RegionMapping.mapping_file_path = path
 
     @staticmethod
     def get_name(short):
@@ -19,8 +27,12 @@ class RegionMapping:
 
     @staticmethod
     def load_mapping():
-        with open("mappings/de_region_names.json", 'r', encoding="utf-8") as f:
-            RegionMapping.mapping = json.load(f)
+        with open(RegionMapping.mapping_file_path, 'r', encoding="utf-8") as f:
+            try:
+                RegionMapping.mapping = json.load(f)
+            except JSONDecodeError:
+                log.error(f"Could not read region names: {RegionMapping.mapping_file_path}")
+                RegionMapping.mapping = {}
 
 
 class Gpo:
@@ -69,9 +81,14 @@ class Gpo:
     def load_mapping():
         if not os.path.exists(Gpo.mapping_file_path) or not os.path.isfile(Gpo.mapping_file_path):
             log.error("the region mapping file not exist")
+            return
 
         with open(Gpo.mapping_file_path, 'r', encoding="utf-8") as f:
-            Gpo.mapping = json.load(f)
+            try:
+                Gpo.mapping = json.load(f)
+            except JSONDecodeError:
+                log.error(f"Could not read region mapping: {Gpo.mapping_file_path}")
+                Gpo.mapping = {}
         log.debug(f"read region mapping from file: '{Gpo.mapping_file_path}'")
 
 

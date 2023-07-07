@@ -4,6 +4,7 @@ import locale
 import logging
 import os.path
 from enum import Enum
+from json import JSONDecodeError
 
 from openpyxl.reader.excel import load_workbook
 
@@ -11,7 +12,7 @@ from report.region import Region
 
 locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
 
-log = logging.getLogger("__main__")
+log = logging.getLogger("ac")
 
 
 class FundFamily(Enum):
@@ -63,7 +64,11 @@ class EtfReader:
             return {}
 
         with open(path, 'r', encoding="utf-8") as f:
-            return json.load(f)
+            try:
+                return json.load(f)
+            except JSONDecodeError:
+                log.error(f"Could not read region mapping for: {path}")
+                return {}
 
     @staticmethod
     def get_region_code(fund_family, name):
