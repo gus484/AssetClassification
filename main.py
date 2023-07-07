@@ -3,6 +3,7 @@ import os
 from json import JSONDecodeError
 from tkinter import *
 from tkinter import filedialog
+from tkinter.ttk import Combobox
 
 from ac import AssetAllocation
 
@@ -13,6 +14,7 @@ class App:
     def __init__(self):
         self.version = "0.01"
         self.w = None
+        self.cb_language = None
         self.input_path = None
         self.inp_mapping = None
         self.inp_isin = None
@@ -67,6 +69,7 @@ class App:
         self.create_mapping_file_selector()
         self.create_csv_file_selector()
         self.create_out_file_selector()
+        self.create_language_selector()
 
         f = Frame(master=self.w, pady=5)
         btn_run_script = Button(f, text=self.config.get('run_script', 'run script'), width=25, command=self.run_script)
@@ -117,6 +120,15 @@ class App:
         self.inp_mapping.pack(side="left")
         btn_set_gpo_path.pack(side="left")
         f.pack()
+
+    def create_language_selector(self):
+        f = Frame(master=self.w, pady=5)
+        languages = ['de', 'en']
+
+        self.cb_language = Combobox(f, values=languages, state="readonly")
+        self.cb_language.set(languages[0])
+        f.pack()
+        self.cb_language.pack()
 
     def create_isin_filter(self):
         rt = Frame(master=self.w)
@@ -182,7 +194,7 @@ class App:
         self.write_config()
         ac = AssetAllocation()
         ac.set_parameters(self.input_path.get(), self.report_path.get(), self.get_isin_filter(),
-                          self.mapping_path.get(), 'de')
+                          self.mapping_path.get(), self.cb_language.get())
         ac.run()
 
 

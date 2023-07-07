@@ -46,6 +46,7 @@ class AssetAllocation:
         self.idirectory = None
         self.isin_filter = []
         self.version = '0.01'
+        self.language = 'de'
 
         setup_logger()
 
@@ -84,6 +85,7 @@ class AssetAllocation:
         arg_parser.add_argument("-od", "--odirectory", help="output path for html report")
         arg_parser.add_argument("-is", "--isin", nargs='+', help="list of interested ISINs")
         arg_parser.add_argument("-gpo", "--gpo_desc", help="path to region mapping json file")
+        arg_parser.add_argument("-l", "--language", help="language")
         args = arg_parser.parse_args()
 
         if args.gpo_desc is not None:
@@ -98,7 +100,11 @@ class AssetAllocation:
         if args.isin is not None:
             self.isin_filter = args.isin
 
-        Translation.set_language("de")
+        if args.language is not None and args.language in ['de', 'en']:
+            self.language = args.language
+
+        Translation.set_language(self.language)
+        report.region.RegionMapping.set_path_to_mapping_file(self.language)
 
     def set_parameters(self, idirectory, odirectory, isin_filter, region_mapping, lang):
         self.idirectory = idirectory
@@ -106,7 +112,9 @@ class AssetAllocation:
         Report.set_paths(src_path, odirectory)
         self.isin_filter = isin_filter
         Gpo.set_path_to_mapping_file(region_mapping)
+        self.language = lang
         Translation.set_language(lang)
+        report.region.RegionMapping.set_path_to_mapping_file(lang)
 
     def read_cash_filter(self):
         if not os.path.exists(self.path_to_cash_filter) or not os.path.isfile(self.path_to_cash_filter):

@@ -19,7 +19,7 @@
   "ESP": "Spain",
   "FIN": "Finland",
   "FRA": "France",
-  "GBR": "Großbritanien",
+  "GBR": "United Kingdom",
   "GRC": "Greece",
   "HKG": "Hong Kong",
   "HUN": "Hungary",
@@ -56,6 +56,6 @@
   "THA": "Thailand",
   "TUR": "Turkey",
   "TWN": "Taiwan",
-  "US": "United States",
+  "USA": "United States",
   "ZAF": "South Africa"
 }
