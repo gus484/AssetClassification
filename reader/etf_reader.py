@@ -86,3 +86,8 @@ class EtfReader:
     def read_sheet(self):
         """Method documentation"""
         return
+
+    @abc.abstractmethod
+    def read_asset(self):
+        """Method documentation"""
+        return
