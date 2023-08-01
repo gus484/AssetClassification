@@ -58,9 +58,9 @@ class AssetAllocation:
         return self.assets
 
     def merge_holdings(self):
-        merged_holdings = Holdings.merge_holdings(self.assets)
-        duplicates = Holdings.find_duplicates(merged_holdings)
-        self.holdings = Holdings.remove_duplicates(merged_holdings, duplicates)
+        positions = Holdings.merge_holdings(self.assets)
+        duplicates = Holdings.find_duplicates(list(positions.keys()))
+        self.holdings = Holdings.remove_duplicates(positions, duplicates)
         self.overlaps = Holdings.create_overlaps(self.holdings)
 
     def report(self):

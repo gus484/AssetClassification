@@ -7,5 +7,6 @@
   "nbr_of_etf_clusters": "Anz. Klumpen ETF",
   "nbr_of_cluster_positions": "Klumpen",
   "last_update": "Datum",
-  "count": "Anzahl"
+  "count": "Anzahl",
+  "country": "Land"
 }

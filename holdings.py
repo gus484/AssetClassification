@@ -1,52 +1,70 @@
+from dataclasses import dataclass
+
+
+@dataclass
+class Position:
+    name: str
+    isin: str
+    region: str
+    related_etfs: dict
+
+
+@dataclass()
+class Weight:
+    weight: float
+    weight_total: float
 
 
 class Holdings:
 
     @staticmethod
     def merge_holdings(assets):
-        md = {}
+        positions = {}
+
         for k, v in assets.items():
             for h in v.values:
                 holding = h.name.upper()
 
-                if holding not in md:
-                    md[holding] = {}
+                if holding not in positions:
+                    positions[holding] = Position(holding, '', h.region, {})
 
-                md[holding][v.isin] = (h.weight, h.weight_total)
-        return md
+                positions[holding].related_etfs[v.isin] = (h.weight, h.weight_total)
+
+        return positions
 
     @staticmethod
-    def find_duplicates(holdings):
-        names = list(holdings.keys())
-        names.sort()
+    def find_duplicates(positions: list[str]) -> list[tuple]:
+        # Tries to find out duplicates by checking similar names
+        positions.sort()
         duplicates = []
 
-        for i in range(len(names)):
-            if i + 1 > len(names) - 1:
+        for i in range(len(positions)):
+            if i + 1 > len(positions) - 1:
                 break
-            nxt_name = names[i + 1]
-            curr_name = names[i]
+            nxt_name = positions[i + 1]
+            curr_name = positions[i]
             if nxt_name.startswith(curr_name):
                 duplicates.append((curr_name, nxt_name))
         return duplicates
 
     @staticmethod
-    def remove_duplicates(holdings, duplicates):
+    def remove_duplicates(positions: dict[str: Position], duplicates) -> list[Position]:
+        # Removes the duplicates and merges the data
         pre_holding = ""
-        for d in duplicates:
-            value = holdings[d[1]]
-            # (f"{d[0]}::{d[1]}")
-            if d[0] in holdings:
-                holdings[d[0]].update(value)
-                pre_holding = d[0]
-            else:
-                holdings[pre_holding].update(value)
+        for curr_name, nxt_name in duplicates:
+            value = positions[nxt_name].related_etfs
 
-            del holdings[d[1]]
-        return holdings
+            if curr_name in positions:
+                pre_holding = curr_name
+                positions[curr_name].related_etfs.update(value)
+            else:
+                positions[pre_holding].related_etfs.update(value)
+
+            del positions[nxt_name]
+        return positions
 
     @staticmethod
-    def create_overlaps(holdings):
+    def create_overlaps(holdings: dict[str: Position]) -> dict:
         """
         Returns a dict with etf isin as key and a dict as value. The sub dict contains the etf isin as keys and a tuple
         of weights
@@ -54,11 +72,11 @@ class Holdings:
         :return:
         """
         overlaps = {}
-        for holding in holdings:
-            if len(holdings[holding]) == 1:
+        for holding, holding_data in holdings.items():
+            if len(holding_data.related_etfs) == 1:
                 continue
-            for a in holdings[holding]:
-                if a not in overlaps:
-                    overlaps[a] = {}
-                overlaps[a][holding] = holdings[holding]
+            for isin in holding_data.related_etfs:
+                if isin not in overlaps:
+                    overlaps[isin] = {}
+                overlaps[isin][holding_data.name] = holding_data.related_etfs
         return overlaps
