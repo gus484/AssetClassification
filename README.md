@@ -23,6 +23,7 @@ The script can be used either by command line or via the GUI.
 
 * Vanguard
 * iShares
+* VanEck
 
 #### Funktionsumfang / functions
 
@@ -38,11 +39,11 @@ The script can be used either by command line or via the GUI.
 
 #### Pläne / further plans
 
-* Report-Sprachauswahl via GUI / change report language via GUI
+* :white_check_mark: ~~Report-Sprachauswahl via GUI / change report language via GUI~~
 * Fortschrittsanzeige und Logging in der GUI / GUI displays the progress and log messages
 * Unterstützung weiterer Anbieter / support for other issuers
 * automatischer Download / automatic download
-* Anbindung an Portfolio Performance / link to Portfolio Performance
+* :wrench: Anbindung an Portfolio Performance / link to Portfolio Performance
 * Branchen-Auswertung / Sector evaluation
 
 #### Verwendete Bibliotheken / used libs
