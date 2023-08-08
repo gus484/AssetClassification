@@ -28,7 +28,7 @@ class QueueFormatter(logging.Formatter):
 def setup_logger(log_queue):
     log.setLevel(logging.DEBUG)
 
-    file = logging.FileHandler("asset.log")
+    file = logging.FileHandler("asset.log", encoding="UTF-8")
     file.setLevel(logging.DEBUG)
     file_format = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s", datefmt="%d.%m.%y - %H:%M:%S")
     file.setFormatter(file_format)
