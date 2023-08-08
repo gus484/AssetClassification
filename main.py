@@ -1,5 +1,9 @@
 import json
 import os
+import queue
+import threading
+import time
+import tkinter
 from json import JSONDecodeError
 from tkinter import *
 from tkinter import filedialog
@@ -24,6 +28,10 @@ class App:
         self.txt_log = None
         self.report_path = None
         self.config = {}
+        self.log_queue = None
+        self.log_thread = None
+        self.script_thread = None
+        self.btn_run_script = None
 
         self.path_to_script = ''
 
@@ -72,8 +80,9 @@ class App:
         self.create_language_selector()
 
         f = Frame(master=self.w, pady=5)
-        btn_run_script = Button(f, text=self.config.get('run_script', 'run script'), width=25, command=self.run_script)
-        btn_run_script.pack()
+        self.btn_run_script = Button(f, text=self.config.get('run_script', 'run script'), width=25,
+                                     command=self.run_script)
+        self.btn_run_script.pack()
         f.pack()
 
         self.create_log_view()
@@ -85,8 +94,17 @@ class App:
         widget.pack_forget()
 
     def create_log_view(self):
-        self.txt_log = Text(self.w)
-        self.make_invisible(self.txt_log)
+        f = Frame(master=self.w, pady=5)
+
+        self.txt_log = Text(f, width=30, height=10, wrap=tkinter.NONE)
+        self.txt_log.grid(column=0, row=1)
+        self.txt_log.pack(side="left")
+
+        scrollbar = Scrollbar(f, command=self.txt_log.yview)
+        scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+        self.txt_log.config(yscrollcommand=scrollbar.set)
+
+        f.pack()
 
     def create_csv_file_selector(self):
         f = Frame(master=self.w, pady=5, padx=10)
@@ -190,12 +208,47 @@ class App:
             isin_list.append(isin[0])
         return isin_list
 
-    def run_script(self):
-        self.write_config()
-        ac = AssetAllocation()
+    def run_ac(self, log_queue: queue):
+        ac = AssetAllocation(log_queue)
         ac.set_parameters(self.input_path.get(), self.report_path.get(), self.get_isin_filter(),
                           self.mapping_path.get(), self.cb_language.get())
         ac.run()
+
+        self.btn_run_script['state'] = tkinter.NORMAL
+
+    def format_log_message(self, message) -> str:
+        lvl_idx = message.find(":")
+        return message[lvl_idx + 1:]
+
+    def log_message(self):
+        """
+        writes messages from the queue to the text widget as long the script thread runs
+        """
+        run = True
+        while run:
+            time.sleep(0.1)
+
+            while not self.log_queue.empty():
+                ele = self.log_queue.get()
+                self.txt_log.insert(END, self.format_log_message(ele.getMessage()) + '\n')
+
+            if not self.script_thread.is_alive():
+                run = False
+
+    def run_script(self):
+        self.btn_run_script['state'] = tkinter.DISABLED
+
+        self.write_config()
+
+        self.txt_log.delete("1.0", tkinter.END)
+
+        # configure and start the log and ac script threads
+        self.log_queue = queue.Queue()
+        self.script_thread = threading.Thread(target=self.run_ac, args=(self.log_queue,))
+        self.log_thread = threading.Thread(target=self.log_message)
+
+        self.log_thread.start()
+        self.script_thread.start()
 
 
 if __name__ == '__main__':
