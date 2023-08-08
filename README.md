@@ -40,7 +40,7 @@ The script can be used either by command line or via the GUI.
 #### Pläne / further plans
 
 * :white_check_mark: ~~Report-Sprachauswahl via GUI / change report language via GUI~~
-* Fortschrittsanzeige und Logging in der GUI / GUI displays the progress and log messages
+* :wrench: Fortschrittsanzeige ~~und Logging~~ in der GUI / GUI displays the progress ~~and log messages~~
 * Unterstützung weiterer Anbieter / support for other issuers
 * automatischer Download / automatic download
 * :wrench: Anbindung an Portfolio Performance / link to Portfolio Performance
