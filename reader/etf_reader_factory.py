@@ -25,7 +25,7 @@ class EtfReaderFactory:
 
         for k, v in EtfReaderFactory.READERS.items():
             if re.search(v[0], file_name) is not None:
-                log.info(f"{k} => {file_name}")
+                log.debug(f"{k} => {file_name}")
                 reader = v[1](fpath)
                 break
         return reader
