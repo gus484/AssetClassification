@@ -8,7 +8,7 @@ from reader.etf_reader import EtfReader, FundFamily
 class VanguardEtfReader(EtfReader):
     REGEX = r'([\(\)\s\w]*\s\-\s)*(\d+.\d+.\d+)\.(xlsx)'
 
-    def __init__(self, fpath):
+    def __init__(self, fpath: str):
         super().__init__(fpath)
         self.fund_family = FundFamily.VANGUARD.value
         self.start_row = 8
