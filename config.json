@@ -1,11 +1,7 @@
 {
-    "isin": [],
-    "mapping": "",
-    "input": "",
-    "report": "",
-    "input_path": "Input-Pfad",
-    "region_mapping": "Regionszuordnung",
-    "report_path": "Report-Pfad",
-    "run_script": "Skript ausführen"
-
+  "isin": [],
+  "mapping": "",
+  "input": "",
+  "report": "",
+  "language": "en"
 }
