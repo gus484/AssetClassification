@@ -10,7 +10,7 @@ from reader.etf_reader import EtfReader, FundFamily
 class ISharesEtfReader(EtfReader):
     REGEX = r'[A-Z]{4}\_(holdings)\.(csv)'
 
-    def __init__(self, fpath):
+    def __init__(self, fpath: str):
         super().__init__(fpath)
         self.fund_family = FundFamily.ISHARES.value
         self.start_row = 4
@@ -27,7 +27,7 @@ class ISharesEtfReader(EtfReader):
                 if line_no == 1:
                     last_update = line[1]
                     break
-        date_format = '%d.%B.%Y'
+        date_format = '%d.%b.%Y'
         date_obj = datetime.strptime(last_update, date_format)
         last_update = date_obj.strftime('%d.%m.%Y')
 

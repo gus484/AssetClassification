@@ -3,9 +3,11 @@
         "EIMU_holdings.csv": "IE00BD45KH83",
         "IUSN_holdings.csv": "IE00BF4RFH31",
         "EUNM_holdings.csv": "IE00B4L5YC18",
-        "IUSQ_holdings.csv": "IE00B6R52259"
+        "IUSQ_holdings.csv": "IE00B6R52259",
+        "IWLE_holdings.csv": "IE00BKBF6H24"
     },
     "VANGUARD": {
+        "Vanguard FTSE All-World UCITS ETF (USD) Accumulating": "IE00BK5BQT80",
         "FTSE All-World High Dividend Yield UCITS ETF - (USD) Distributing": "IE00B8GKDB10",
         "FTSE Developed Asia Pacific ex Japan UCITS ETF - (USD) Distributing": "IE00B9F5YL18",
         "FTSE Japan UCITS ETF - (USD) Distributing": "IE00B95PGT31",

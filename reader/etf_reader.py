@@ -5,8 +5,10 @@ import logging
 import os.path
 from enum import Enum
 from json import JSONDecodeError
+from pathlib import Path
 
 from openpyxl.reader.excel import load_workbook
+from openpyxl.utils.exceptions import InvalidFileException
 
 from report.region import Region
 
@@ -24,9 +26,10 @@ class FundFamily(Enum):
 class EtfReader:
     ISIN_LOOKUP = None
     ISIN_TO_NAME_LOOKUP = None
+    NOT_EXIST = '----'
     REGION_MAPPING = {}
 
-    def __init__(self, fpath):
+    def __init__(self, fpath: str):
         self.name = ''
         self.fpath = fpath
         self.asset = None
@@ -34,7 +37,7 @@ class EtfReader:
         self.values = []
         self.isin = ''
 
-    def update_region(self, region, weight):
+    def update_region(self, region: str, weight: float) -> None:
         if region not in self.asset.regions:
             self.asset.regions[region] = Region(region, weight)
         else:
@@ -42,23 +45,30 @@ class EtfReader:
             self.asset.regions[region].num_of_countries += 1
 
     def read_sheet_from_wb(self):
-        wb = load_workbook(filename=self.fpath)
-        self.sheet = wb.active
+        try:
+            wb = load_workbook(filename=self.fpath)
+            self.sheet = wb.active
+        except InvalidFileException as e:
+            log.error(f"Could not read file: {self.fpath}")
 
     @staticmethod
-    def get_isin_from_file_name(fund_family, name):
+    def get_isin_from_file_name(fund_family, name) -> str:
         if EtfReader.ISIN_LOOKUP is None:
-            EtfReader.ISIN_LOOKUP = EtfReader.read_json(os.path.join("mappings", "isin_lookup.json"))
-        return EtfReader.ISIN_LOOKUP.get(fund_family, {}).get(name, '----')
+            path_to_mapping = Path(__file__).parent
+            path_to_mapping = os.path.join(path_to_mapping,"../","mappings", "isin_lookup.json")
+            EtfReader.ISIN_LOOKUP = EtfReader.read_json(path_to_mapping)
+        return EtfReader.ISIN_LOOKUP.get(fund_family, {}).get(name, EtfReader.NOT_EXIST)
 
     @staticmethod
-    def get_name_from_isin(fund_family, isin):
+    def get_name_from_isin(fund_family, isin) -> str:
         if EtfReader.ISIN_TO_NAME_LOOKUP is None:
-            EtfReader.ISIN_TO_NAME_LOOKUP = EtfReader.read_json(os.path.join("mappings", "isin_to_name_lookup.json"))
-        return EtfReader.ISIN_TO_NAME_LOOKUP.get(fund_family, {}).get(isin, '----')
+            path_to_mapping = Path(__file__).parent
+            path_to_mapping = os.path.join(path_to_mapping,"../","mappings", "isin_to_name_lookup.json")
+            EtfReader.ISIN_TO_NAME_LOOKUP = EtfReader.read_json(path_to_mapping)
+        return EtfReader.ISIN_TO_NAME_LOOKUP.get(fund_family, {}).get(isin, EtfReader.NOT_EXIST)
 
     @staticmethod
-    def read_json(path):
+    def read_json(path: str):
         if not os.path.exists(path):
             log.warning(f"No region mapping found:{path}")
             return {}
@@ -73,16 +83,17 @@ class EtfReader:
     @staticmethod
     def get_region_code(fund_family, name):
         if fund_family not in EtfReader.REGION_MAPPING:
-            EtfReader.REGION_MAPPING[fund_family] = EtfReader.read_json(os.path.join("mappings", fund_family + ".json"))
+            path_to_mapping = Path(__file__).parent
+            path_to_mapping = os.path.join(path_to_mapping,"../","mappings", fund_family + ".json")
+            EtfReader.REGION_MAPPING[fund_family] = EtfReader.read_json(path_to_mapping)
         return EtfReader.REGION_MAPPING[fund_family].get(name, name)
-
-    def add_region(self, region, weight):
-        if region not in self.asset.regions:
-            self.asset.regions[region] = weight
-        else:
-            self.asset.regions[region] += weight
 
     @abc.abstractmethod
     def read_sheet(self):
+        """Method documentation"""
+        return
+
+    @abc.abstractmethod
+    def read_asset(self):
         """Method documentation"""
         return
