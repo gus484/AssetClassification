@@ -10,6 +10,7 @@ from tkinter import filedialog
 from tkinter.ttk import Combobox
 
 from ac import AssetAllocation
+from report.translation import Translation
 
 
 class App:
@@ -21,16 +22,22 @@ class App:
         self.cb_language = None
         self.input_path = None
         self.inp_mapping = None
+        self.isin_label = None
         self.inp_isin = None
         self.lb_isin = None
         self.mapping_path = None
         self.input_path = None
         self.txt_log = None
         self.report_path = None
+        self.pp_path = None
+        self.inp_pp_path = None
         self.config = {}
         self.log_queue = None
         self.log_thread = None
         self.script_thread = None
+        self.btn_set_gpo_path = None
+        self.btn_set_out_path = None
+        self.btn_set_csv_path = None
         self.btn_run_script = None
 
         self.path_to_script = ''
@@ -51,7 +58,9 @@ class App:
         for isin in isin_filter:
             self.lb_isin.insert(END, isin)
 
-        if os.path.exists(self.config.get("mapping")):
+        self.cb_language.set(self.config.get('language', 'en'))
+
+        if os.path.exists(self.config.get("mapping", "")):
             self.mapping_path.set(self.config.get("mapping"))
         if os.path.exists(self.config.get("input", "")):
             self.input_path.set(self.config.get("input", ""))
@@ -63,6 +72,7 @@ class App:
         self.config['mapping'] = self.mapping_path.get()
         self.config['input'] = self.input_path.get()
         self.config['report'] = self.report_path.get()
+        self.config['language'] = self.cb_language.get()
         json_object = json.dumps(self.config, indent=4, ensure_ascii=False)
 
         with open(App.CONFIG_FILE_PATH, "w", encoding="utf8") as outfile:
@@ -70,6 +80,9 @@ class App:
 
     def run(self):
         self.load_config()
+
+        Translation.set_language(self.config.get('language', 'en'))
+
         self.w = Tk()
         self.w.title(f"AssetAllocation (Ver. {self.version})")
 
@@ -77,10 +90,11 @@ class App:
         self.create_mapping_file_selector()
         self.create_csv_file_selector()
         self.create_out_file_selector()
+        self.create_pp_file_selector()
         self.create_language_selector()
 
         f = Frame(master=self.w, pady=5)
-        self.btn_run_script = Button(f, text=self.config.get('run_script', 'run script'), width=25,
+        self.btn_run_script = Button(f, text=Translation.get_name('run_script'), width=25,
                                      command=self.run_script)
         self.btn_run_script.pack()
         f.pack()
@@ -88,6 +102,7 @@ class App:
         self.create_log_view()
 
         self.set_config()
+
         self.w.mainloop()
 
     def make_invisible(self, widget):
@@ -110,33 +125,33 @@ class App:
         f = Frame(master=self.w, pady=5, padx=10)
         self.input_path = StringVar()
         inp_csv = Entry(f, textvariable=self.input_path, state=DISABLED, width=25)
-        btn_set_csv_path = Button(f, text=self.config.get("input_path", "input path"),
-                                  command=self.open_input_path, width=15)
+        self.btn_set_csv_path = Button(f, text=Translation.get_name("input_path"),
+                                       command=self.open_input_path, width=15)
 
         inp_csv.pack(side="left")
-        btn_set_csv_path.pack(side="left")
+        self.btn_set_csv_path.pack(side="left")
         f.pack()
 
     def create_out_file_selector(self):
         f = Frame(master=self.w, pady=5, padx=10)
         self.report_path = StringVar()
         inp_csv = Entry(f, textvariable=self.report_path, state=DISABLED, width=25)
-        btn_set_out_path = Button(f, text=self.config.get("report_path", "report path"),
-                                  command=self.open_report_path, width=15)
+        self.btn_set_out_path = Button(f, text=Translation.get_name("report_path"),
+                                       command=self.open_report_path, width=15)
 
         inp_csv.pack(side="left")
-        btn_set_out_path.pack(side="left")
+        self.btn_set_out_path.pack(side="left")
         f.pack()
 
     def create_mapping_file_selector(self):
         f = Frame(master=self.w, pady=10)
         self.mapping_path = StringVar()
         self.inp_mapping = Entry(f, textvariable=self.mapping_path, state=DISABLED, width=25)
-        btn_set_gpo_path = Button(f, text=self.config.get("region_mapping", "region mapping"),
-                                  command=self.open_mapping_path, width=15)
+        self.btn_set_gpo_path = Button(f, text=Translation.get_name("region_mapping"),
+                                       command=self.open_mapping_path, width=15)
 
         self.inp_mapping.pack(side="left")
-        btn_set_gpo_path.pack(side="left")
+        self.btn_set_gpo_path.pack(side="left")
         f.pack()
 
     def create_language_selector(self):
@@ -145,18 +160,39 @@ class App:
 
         self.cb_language = Combobox(f, values=languages, state="readonly")
         self.cb_language.set(languages[0])
+        self.cb_language.bind("<<ComboboxSelected>>", self.change_language)
         f.pack()
         self.cb_language.pack()
+
+    def change_language(self, event):
+        Translation.set_language(event.widget.get())
+        self.btn_run_script.config(text=Translation.get_name('run_script'))
+        self.btn_set_out_path.config(text=Translation.get_name('report_path'))
+        self.btn_set_csv_path.config(text=Translation.get_name('input_path'))
+        self.btn_set_gpo_path.config(text=Translation.get_name('region_mapping'))
+        self.isin_label.config(text=Translation.get_name('isin_filter'))
+
+    def create_pp_file_selector(self):
+        f = Frame(master=self.w, pady=5)
+
+        self.pp_path = StringVar()
+        self.inp_pp_path = Entry(f, textvariable=self.pp_path, state=DISABLED, width=25)
+        btn_pp_path = Button(f, text=Translation.get_name("pp_file"),
+                             command=self.open_pp_path, width=15)
+
+        self.inp_pp_path.pack(side="left")
+        btn_pp_path.pack(side="left")
+        f.pack()
 
     def create_isin_filter(self):
         rt = Frame(master=self.w)
         r1 = Frame(rt, padx=5)
         r2 = Frame(rt)
 
-        isin_label = Label(r1, text="ISIN-Filter")
+        self.isin_label = Label(r1, text=Translation.get_name('isin_filter'))
         self.lb_isin = Listbox(r1, selectmode=SINGLE, height=4, width=25)
 
-        isin_label.pack()
+        self.isin_label.pack()
         self.lb_isin.pack()
 
         btn_delete_isin = Button(r2, text="🗙", command=self.delete_isin)
@@ -201,6 +237,11 @@ class App:
         mapping_path = filedialog.askopenfilename(filetypes=[('JSON File', '*.json')])
         if mapping_path != "":
             self.mapping_path.set(mapping_path)
+
+    def open_pp_path(self):
+        pp_path = filedialog.askopenfilename(filetypes=[('PP File', '*.xml')])
+        if pp_path != "":
+            self.pp_path.set(pp_path)
 
     def get_isin_filter(self):
         isin_list = []
