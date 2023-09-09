@@ -8,5 +8,11 @@
   "nbr_of_cluster_positions": "Klumpen",
   "last_update": "Datum",
   "count": "Anzahl",
-  "country": "Land"
+  "country": "Land",
+  "run_script": "Skript ausführen",
+  "input_path": "Input-Pfad",
+  "region_mapping": "Regionszuordnung",
+  "report_path": "Report-Pfad",
+  "pp_file": "PP-Datei",
+  "isin_filter": "ISIN-Filter"
 }

@@ -5,7 +5,14 @@
   "cluster_risk": "Cluster",
   "nbr_of_holdings": "Number of holdings",
   "nbr_of_etf_clusters": "Number of cluster ETFs",
+  "nbr_of_cluster_positions": "Number of clusters",
   "last_update": "Date",
   "count": "Count",
-  "country": "County"
+  "country": "County",
+  "run_script": "Run script",
+  "input_path": "Input path",
+  "region_mapping": "Region mapping",
+  "report_path": "Report path",
+  "pp_file": "PP file",
+  "isin_filter": "ISIN filter"
 }
