@@ -10,6 +10,8 @@ from tkinter import filedialog
 from tkinter.ttk import Combobox
 
 from ac import AssetAllocation
+from dialogs.dlgAbout import DlgAbout
+from dialogs.dlgEtfLib import DlgEtfLib
 from report.translation import Translation
 
 
@@ -86,6 +88,7 @@ class App:
         self.w = Tk()
         self.w.title(f"AssetAllocation (Ver. {self.version})")
 
+        self.create_menu_bar()
         self.create_isin_filter()
         self.create_mapping_file_selector()
         self.create_csv_file_selector()
@@ -107,6 +110,20 @@ class App:
 
     def make_invisible(self, widget):
         widget.pack_forget()
+
+    def show_about(self):
+        dlg_about = DlgAbout()
+        dlg_about.mainloop()
+
+    def show_etflib(self):
+        dlg_etflib = DlgEtfLib(self.w)
+        dlg_etflib.mainloop()
+
+    def create_menu_bar(self):
+        menubar = Menu()
+        self.w.config(menu=menubar)
+        menubar.add_command(label="ETFLib", command=self.show_etflib)
+        menubar.add_command(label="About", command=self.show_about, compound=tkinter.RIGHT)
 
     def create_log_view(self):
         f = Frame(master=self.w, pady=5)
