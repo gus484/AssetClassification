@@ -142,9 +142,13 @@ class AssetAllocation:
 
     def run(self):
         self.read_cash_filter()
+        log.info("Stage 1: read files")
         self.read_assets()
+        log.info("Stage 2: merge holdings")
         self.merge_holdings()
+        log.info("Stage 3: create report")
         self.report()
+        log.info("finished")
 
 
 if __name__ == '__main__':

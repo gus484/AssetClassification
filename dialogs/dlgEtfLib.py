@@ -1,5 +1,6 @@
-from tkinter import Listbox, Frame, SINGLE, END, Entry, Toplevel
+from tkinter import Frame, SINGLE, END, Toplevel, Listbox, Entry
 
+from dialogs import helper
 from reader.etf_reader import EtfReader
 
 
@@ -8,6 +9,11 @@ class DlgEtfLib(Toplevel):
     def __init__(self, master=None):
         Toplevel.__init__(self)
         self.lb_issuers = None
+
+        width = 400
+        height = 150
+
+        self.geometry(helper.get_center_coords(self, width, height))
 
         self.etf_data = {}
         self.title("ETF-Lib")
