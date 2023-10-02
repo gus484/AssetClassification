@@ -8,6 +8,7 @@ import queue
 
 import report.region
 from holdings import Holdings
+from pp.pp_updater import PPUpdater
 from reader.etf_reader_factory import EtfReaderFactory
 from report.about import AboutReport
 from report.region import Gpo
@@ -62,6 +63,8 @@ class AssetAllocation:
         self.isin_filter = []
         self.version = '0.01'
         self.language = 'de'
+        self.pp_file = None
+        self.pp_data = {}
 
         setup_logger(log_queue)
 
@@ -90,6 +93,7 @@ class AssetAllocation:
         # report_regions
         rep = ReportFactory.get_reporter(Report.HTML_REGIONS, self.assets)
         rep.create()
+        self.pp_data = rep.get_gpo_data()
 
         rep = AboutReport()
         rep.create(self.version)
@@ -121,11 +125,12 @@ class AssetAllocation:
         Translation.set_language(self.language)
         report.region.RegionMapping.set_path_to_mapping_file(self.language)
 
-    def set_parameters(self, idirectory, odirectory, isin_filter, region_mapping, lang):
+    def set_parameters(self, idirectory, odirectory, isin_filter, region_mapping, lang, pp_file):
         self.idirectory = idirectory
         src_path = pathlib.Path().resolve()
         Report.set_paths(src_path, odirectory)
         self.isin_filter = isin_filter
+        self.pp_file = pp_file
         Gpo.set_path_to_mapping_file(region_mapping)
         self.language = lang
         Translation.set_language(lang)
@@ -142,9 +147,17 @@ class AssetAllocation:
 
     def run(self):
         self.read_cash_filter()
+        log.info("Stage 1: read files")
         self.read_assets()
+        log.info("Stage 2: merge holdings")
         self.merge_holdings()
+        log.info("Stage 3: create report")
         self.report()
+        if not self.pp_file == '':
+            log.info("Stage 4: write to pp file")
+            pp = PPUpdater(self.pp_file, '')
+            pp.run(self.pp_data)
+        log.info("finished")
 
 
 if __name__ == '__main__':
