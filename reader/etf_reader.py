@@ -3,6 +3,7 @@ import json
 import locale
 import logging
 import os.path
+from datetime import datetime
 from enum import Enum
 from json import JSONDecodeError
 from pathlib import Path
@@ -19,6 +20,7 @@ log = logging.getLogger("ac")
 
 class FundFamily(Enum):
     ISHARES = 'ISHARES'
+    SPDR = "SPDR"
     VANECK = 'VANECK'
     VANGUARD = 'VANGUARD'
 
@@ -50,6 +52,14 @@ class EtfReader:
             self.sheet = wb.active
         except InvalidFileException as e:
             log.error(f"Could not read file: {self.fpath}")
+
+    def parse_date(self, last_update: str) -> datetime:
+        for date_format in self.DATE_FORMATS:
+            try:
+                date_obj = datetime.strptime(last_update, date_format)
+                return date_obj
+            except ValueError:
+                pass
 
     @staticmethod
     def get_isin_from_file_name(fund_family, name) -> str:
