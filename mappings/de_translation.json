@@ -10,9 +10,13 @@
   "count": "Anzahl",
   "country": "Land",
   "run_script": "Skript ausführen",
-  "input_path": "Input-Pfad",
+  "input_path": "Quellpfad",
   "region_mapping": "Regionszuordnung",
-  "report_path": "Report-Pfad",
+  "report_path": "Zielpfad",
   "pp_file": "PP-Datei",
-  "isin_filter": "ISIN-Filter"
+  "isin_filter": "ISIN-Filter",
+  "preferences": "Einstellungen",
+  "about": "Über",
+  "language": "Sprache",
+  "log_messages": "Log-Nachrichten"
 }

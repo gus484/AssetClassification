@@ -3,8 +3,9 @@ import logging
 import re
 from pathlib import Path
 
-from reader.etf_reader import FundFamily
+from reader.etf_reader import FundFamily, EtfReader
 from reader.ishares_etf_reader import ISharesEtfReader
+from reader.spdr_etf_reader import SpdrEtfReader
 from reader.vaneck_etf_reader import VanEckEtfReader
 from reader.vanguard_etf_reader import VanguardEtfReader
 
@@ -14,6 +15,7 @@ log = logging.getLogger("ac")
 class EtfReaderFactory:
     READERS = {
         FundFamily.ISHARES: (ISharesEtfReader.REGEX, ISharesEtfReader),
+        FundFamily.SPDR: (SpdrEtfReader.REGEX, SpdrEtfReader),
         FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
         FundFamily.VANGUARD: (VanguardEtfReader.REGEX, VanguardEtfReader)
     }
@@ -52,6 +54,10 @@ class EtfReaderFactory:
             return None
 
         r.read_asset()
+
+        if r.isin == EtfReader.NOT_EXIST:
+            log.warning(f"Could not get ISIN for {r.fpath}")
+            return None
 
         if r.isin not in isin_filter and len(isin_filter) > 0:
             return None

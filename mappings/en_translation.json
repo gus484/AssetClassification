@@ -10,9 +10,13 @@
   "count": "Count",
   "country": "County",
   "run_script": "Run script",
-  "input_path": "Input path",
+  "input_path": "Source path",
   "region_mapping": "Region mapping",
-  "report_path": "Report path",
+  "report_path": "Target path",
   "pp_file": "PP file",
-  "isin_filter": "ISIN filter"
+  "isin_filter": "ISIN filter",
+  "preferences": "Preferences",
+  "about": "About",
+  "language": "Language",
+  "log_messages": "Log messages"
 }

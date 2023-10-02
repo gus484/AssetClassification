@@ -1,38 +1,32 @@
-from locale import atof
+from datetime import datetime
 
 from reader.asset import Asset, Value
 from reader.etf_reader import EtfReader, FundFamily
 
 
-class VanguardEtfReader(EtfReader):
-    REGEX = r'([\(\)\s\w]*\s\-\s)*(\d+.\d+.\d+)\.(xlsx)'
-    DATE_FORMATS = [
-        '%d. %B %Y',
-        '%d. %b. %Y'
-    ]
+class SpdrEtfReader(EtfReader):
+    REGEX = r'(holdings)([a-z-]*)(.xlsx)'
 
     def __init__(self, fpath: str):
         super().__init__(fpath)
-        self.fund_family = FundFamily.VANGUARD.value
-        self.start_row = 8
+        self.fund_family = FundFamily.SPDR.value
+        self.start_row = 7
         self.ticker_col = 1
-        self.name_col = 2
-        self.weight_col = 3
-        self.region_col = 5
+        self.name_col = 3
+        self.weight_col = 6
+        self.region_col = 7
         self.read_sheet_from_wb()
 
     def read_asset(self):
-        name = self.sheet.cell(4, 1).value
-        last_update = self.sheet.cell(5, 1).value[4:]
+        name = self.sheet.cell(1, 2).value
+        last_update = self.sheet.cell(4, 2).value
 
-        # date_format = '%d. %b %Y'
-        # date_obj = datetime.strptime(last_update, date_format)
-        date_obj = self.parse_date(last_update)
+        date_format = '%d-%b-%Y'
+        date_obj = datetime.strptime(last_update, date_format)
         last_update = date_obj.strftime('%d.%m.%Y')
 
         self.isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
-        print(self.asset)
 
     def read_sheet(self):
         for i in range(self.start_row, self.sheet.max_row):
@@ -40,7 +34,8 @@ class VanguardEtfReader(EtfReader):
             if name is None:
                 break
             weight = self.sheet.cell(i, self.weight_col).value
-            weight = atof(weight.replace("%", "").replace("\xa0", ""))
+            if weight == '-':
+                continue
             ticker = self.sheet.cell(i, self.ticker_col).value
             region = self.sheet.cell(i, self.region_col).value
             region = EtfReader.get_region_code(self.fund_family, region)

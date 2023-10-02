@@ -4,7 +4,7 @@ import shutil
 
 from report.html import Html
 
-log = logging.getLogger("__main__")
+log = logging.getLogger("ac")
 
 
 class Report:
@@ -59,9 +59,12 @@ class Report:
         Report.REPORT_SRC_PATH = src_path
 
         if os.path.exists(dest_path) and os.path.isdir(dest_path):
-            log.info("set report directory to: %s", [dest_path])
+            log.debug("set report directory to: %s", [dest_path])
             Report.REPORT_PATH = dest_path
-            Report.__copy_static_files()
+            try:
+                Report.__copy_static_files()
+            except FileNotFoundError:
+                log.error("report assets not found")
 
     @staticmethod
     def __copy_static_files():

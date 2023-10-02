@@ -3,6 +3,7 @@ import json
 import locale
 import logging
 import os.path
+from datetime import datetime
 from enum import Enum
 from json import JSONDecodeError
 from pathlib import Path
@@ -19,6 +20,7 @@ log = logging.getLogger("ac")
 
 class FundFamily(Enum):
     ISHARES = 'ISHARES'
+    SPDR = "SPDR"
     VANECK = 'VANECK'
     VANGUARD = 'VANGUARD'
 
@@ -51,11 +53,19 @@ class EtfReader:
         except InvalidFileException as e:
             log.error(f"Could not read file: {self.fpath}")
 
+    def parse_date(self, last_update: str) -> datetime:
+        for date_format in self.DATE_FORMATS:
+            try:
+                date_obj = datetime.strptime(last_update, date_format)
+                return date_obj
+            except ValueError:
+                pass
+
     @staticmethod
     def get_isin_from_file_name(fund_family, name) -> str:
         if EtfReader.ISIN_LOOKUP is None:
             path_to_mapping = Path(__file__).parent
-            path_to_mapping = os.path.join(path_to_mapping,"../","mappings", "isin_lookup.json")
+            path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", "isin_lookup.json")
             EtfReader.ISIN_LOOKUP = EtfReader.read_json(path_to_mapping)
         return EtfReader.ISIN_LOOKUP.get(fund_family, {}).get(name, EtfReader.NOT_EXIST)
 
@@ -63,9 +73,26 @@ class EtfReader:
     def get_name_from_isin(fund_family, isin) -> str:
         if EtfReader.ISIN_TO_NAME_LOOKUP is None:
             path_to_mapping = Path(__file__).parent
-            path_to_mapping = os.path.join(path_to_mapping,"../","mappings", "isin_to_name_lookup.json")
+            path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", "isin_to_name_lookup.json")
             EtfReader.ISIN_TO_NAME_LOOKUP = EtfReader.read_json(path_to_mapping)
         return EtfReader.ISIN_TO_NAME_LOOKUP.get(fund_family, {}).get(isin, EtfReader.NOT_EXIST)
+
+    @staticmethod
+    def get_isin_and_names():
+        # pre load lookup files
+        EtfReader.get_name_from_isin(FundFamily.VANGUARD, '')
+        EtfReader.get_isin_from_file_name(FundFamily.VANGUARD, '')
+
+        etf_data = EtfReader.ISIN_TO_NAME_LOOKUP
+        for issuer, data in EtfReader.ISIN_LOOKUP.items():
+            if issuer in etf_data:
+                continue
+
+            etf_data[issuer] = {}
+            for name, isin in data.items():
+                etf_data[issuer][isin] = name
+
+        return etf_data
 
     @staticmethod
     def read_json(path: str):
@@ -84,7 +111,7 @@ class EtfReader:
     def get_region_code(fund_family, name):
         if fund_family not in EtfReader.REGION_MAPPING:
             path_to_mapping = Path(__file__).parent
-            path_to_mapping = os.path.join(path_to_mapping,"../","mappings", fund_family + ".json")
+            path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", fund_family + ".json")
             EtfReader.REGION_MAPPING[fund_family] = EtfReader.read_json(path_to_mapping)
         return EtfReader.REGION_MAPPING[fund_family].get(name, name)
 
