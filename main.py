@@ -84,8 +84,8 @@ class App:
 
         self.change_language(self.config.get('language', 'en'))
 
-        if os.path.exists(self.config.get("mapping", "")):
-            self.mapping_path.set(self.config.get("mapping"))
+        # if os.path.exists(self.config.get("mapping", "")):
+        #    self.mapping_path.set(self.config.get("mapping"))
         if os.path.exists(self.config.get("input", "")):
             self.source_path.set(self.config.get("input", ""))
         if os.path.exists(self.config.get("report", "")):
@@ -110,9 +110,12 @@ class App:
         self.w = ThemedTk(theme="arc")
         self.w.title(f"AssetAllocation (Ver. {self.version})")
         self.create_menu_bar()
-        self.img_folder = PhotoImage(file=r"C:\Users\MarkusF\PycharmProjects\AssetClassification\images\folder.png")
-        self.img_remove = PhotoImage(file=r"C:\Users\MarkusF\PycharmProjects\AssetClassification\images\remove.png")
-        self.img_add = PhotoImage(file=r"C:\Users\MarkusF\PycharmProjects\AssetClassification\images\add.png")
+
+        curr_path = os.getcwd()
+
+        self.img_folder = PhotoImage(file=os.path.join(curr_path, r"images\folder.png"))
+        self.img_remove = PhotoImage(file=os.path.join(curr_path, r"images\remove.png"))
+        self.img_add = PhotoImage(file=os.path.join(curr_path, r"images\add.png"))
         self.w.iconbitmap('images/pie.ico')
 
         fm = Frame(master=self.w, pady=5)
