@@ -1,0 +1,79 @@
+{
+  "Emerging Markets": [
+    "ARE",
+    "BRA",
+    "CHL",
+    "CHN",
+    "COL",
+    "EGY",
+    "IDN",
+    "IND",
+    "KWT",
+    "MEX",
+    "MYS",
+    "PHL",
+    "QAT",
+    "ROU",
+    "SAU",
+    "THA",
+    "TUR",
+    "TWN",
+    "ZAF"
+  ],
+  "Europa": [
+    "AUT",
+    "BEL",
+    "CHE",
+    "CZE",
+    "DEU",
+    "DNK",
+    "ESP",
+    "FIN",
+    "FRA",
+    "GBR",
+    "GRC",
+    "HUN",
+    "IRL",
+    "ISL",
+    "ISR",
+    "ITA",
+    "LUX",
+    "NLD",
+    "NOR",
+    "POL",
+    "PRT",
+    "SWE"
+  ],
+  "DW Asien/Pazifik": {
+    "Japan": [
+      "JPN"
+    ],
+    "Rest": [
+      "AUS",
+      "HKG",
+      "KOR",
+      "NZL",
+      "SGP"
+    ]
+  },
+  "Nordamerika": {
+    "US": [
+      "USA"
+    ],
+    "CAN": [
+      "CAN"
+    ]
+  },
+  "Welt": [
+    "BMU",
+    "CUW",
+    "CYM",
+    "IMN",
+    "ISL",
+    "JEY",
+    "LBR",
+    "PAK",
+    "PAN",
+    "RUS"
+  ]
+}

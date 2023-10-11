@@ -37,7 +37,7 @@ class RegionMapping:
 
 class Gpo:
     mapping = None
-    mapping_file_path = "mappings/gpo_mapping3.json"
+    mapping_file_path = "mappings/region/gpo.json"
 
     @staticmethod
     def set_path_to_mapping_file(path):

@@ -1,3 +1,4 @@
+import glob
 import json
 import os
 import queue
@@ -292,7 +293,11 @@ class App:
         f.pack()
 
     def get_available_mappings(self) -> dict[str: str]:
-        self.d_region_mappings = {'MSCI': 'mappings/msci_mapping.json'}
+        self.d_region_mappings = {}
+        json_files = glob.glob(os.path.join('mappings/region/', f'*.json'))
+        for jfile in json_files:
+            file_name = os.path.basename(jfile).replace('.json', '').upper()
+            self.d_region_mappings[file_name] = jfile
         return self.d_region_mappings
 
     def change_language(self, language: str):
