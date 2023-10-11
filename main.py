@@ -85,16 +85,18 @@ class App:
 
         self.change_language(self.config.get('language', 'en'))
 
-        # if os.path.exists(self.config.get("mapping", "")):
-        #    self.mapping_path.set(self.config.get("mapping"))
+        if os.path.exists(self.config.get("mapping", "")):
+            mapping_path = self.config.get("mapping")
+            mapping_name = os.path.basename(mapping_path).replace('.json', '').upper()
+            if mapping_name in self.d_region_mappings:
+                self.cb_mapping.set(mapping_name)
         if os.path.exists(self.config.get("input", "")):
             self.source_path.set(self.config.get("input", ""))
         if os.path.exists(self.config.get("report", "")):
             self.target_path.set(self.config.get("report", ""))
 
     def write_config(self):
-        if self.mapping_path:
-            self.config['mapping'] = self.mapping_path.get()
+        self.config['mapping'] = self.d_region_mappings[self.cb_mapping.get()]
         self.config['input'] = self.source_path.get()
         self.config['report'] = self.target_path.get()
         self.config['language'] = self.language_code
@@ -328,11 +330,6 @@ class App:
         input_path = filedialog.askdirectory()
         if input_path != "":
             self.source_path.set(input_path)
-
-    def open_mapping_path(self):
-        mapping_path = filedialog.askopenfilename(filetypes=[('JSON File', '*.json')])
-        if mapping_path != "":
-            self.mapping_path.set(mapping_path)
 
     def open_pp_path(self):
         pp_path = filedialog.askopenfilename(filetypes=[('PP File', '*.xml')])
