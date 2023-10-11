@@ -97,6 +97,7 @@ class App:
         self.config['input'] = self.source_path.get()
         self.config['report'] = self.target_path.get()
         self.config['language'] = self.language_code
+        self.config['isin'] = self.get_isin_filter()
         json_object = json.dumps(self.config, indent=4, ensure_ascii=False)
 
         with open(App.CONFIG_FILE_PATH, "w", encoding="utf8") as outfile:
@@ -338,7 +339,7 @@ class App:
         if report_path != "":
             self.target_path.set(report_path)
 
-    def get_isin_filter(self):
+    def get_isin_filter(self) -> list:
         isin_list = []
         for line in self.tv_isin.get_children():
             isin_list.append(self.tv_isin.item(line)['values'][0])
@@ -354,7 +355,7 @@ class App:
 
         ac = AssetAllocation(log_queue)
         ac.set_parameters(self.source_path.get(), self.target_path.get(), self.get_isin_filter(),
-                          self.d_region_mappings[self.cb_mapping.get()], self.language_code)
+                          self.d_region_mappings[self.cb_mapping.get()], self.language_code, '')
         ac.run()
 
         self.btn_run_script['state'] = tkinter.NORMAL
