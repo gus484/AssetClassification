@@ -8,6 +8,7 @@ from enum import Enum
 from json import JSONDecodeError
 from pathlib import Path
 
+import dateparser
 from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
@@ -54,12 +55,11 @@ class EtfReader:
             log.error(f"Could not read file: {self.fpath}")
 
     def parse_date(self, last_update: str) -> datetime:
-        for date_format in self.DATE_FORMATS:
-            try:
-                date_obj = datetime.strptime(last_update, date_format)
-                return date_obj
-            except ValueError:
-                pass
+        try:
+            date_obj = dateparser.parse(last_update)
+            return date_obj
+        except ValueError:
+            return datetime.now()
 
     @staticmethod
     def get_isin_from_file_name(fund_family, name) -> str:

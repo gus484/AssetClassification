@@ -1,11 +1,9 @@
-from datetime import datetime
-
 from reader.asset import Asset, Value
 from reader.etf_reader import EtfReader, FundFamily
 
 
 class SpdrEtfReader(EtfReader):
-    REGEX = r'(holdings)([a-z-]*)(.xlsx)'
+    REGEX = r'(holdings)([a-z-0-9]*)(.xlsx)'
 
     def __init__(self, fpath: str):
         super().__init__(fpath)
@@ -21,8 +19,7 @@ class SpdrEtfReader(EtfReader):
         name = self.sheet.cell(1, 2).value
         last_update = self.sheet.cell(4, 2).value
 
-        date_format = '%d-%b-%Y'
-        date_obj = datetime.strptime(last_update, date_format)
+        date_obj = self.parse_date(last_update)
         last_update = date_obj.strftime('%d.%m.%Y')
 
         self.isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
