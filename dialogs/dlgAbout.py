@@ -2,28 +2,31 @@ import webbrowser
 from tkinter import ttk, Toplevel
 
 from dialogs import helper
+from report.translation import Translation
 
 
 class DlgAbout(Toplevel):
 
-    def __init__(self, version):
+    def __init__(self, app_version, script_version):
         Toplevel.__init__(self)
-        self.title("About")
+        self.title(Translation.get_name('about'))
         self.iconbitmap("")
 
         width = 400
-        height = 150
+        height = 160
 
         self.geometry(helper.get_center_coords(self, width, height))
 
         self.app_name = "AssetClassification"
-        self.app_version = f"Vers.: {version}"
+        self.app_version = f"App.-Vers.: {app_version}"
+        self.script_version = f"Script-Vers.: {script_version}"
         self.app_url = "https://github.com/gus484/AssetClassification"
         self.init_page()
 
     def init_page(self):
         ttk.Label(self, text=self.app_name).pack()
         ttk.Label(self, text=self.app_version).pack()
+        ttk.Label(self, text=self.script_version).pack()
         ttk.Label(self, text=self.app_url).pack()
 
         link = ttk.Label(self, text="Images:")

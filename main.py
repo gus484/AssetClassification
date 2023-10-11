@@ -153,7 +153,7 @@ class App:
         self.w.mainloop()
 
     def show_about(self):
-        dlg_about = DlgAbout(self.version)
+        dlg_about = DlgAbout(self.version, AssetAllocation.VERSION)
         dlg_about.mainloop()
 
     def show_etf_lib(self):

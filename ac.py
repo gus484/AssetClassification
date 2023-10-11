@@ -51,6 +51,7 @@ def setup_logger(log_queue):
 
 
 class AssetAllocation:
+    VERSION = '0.2'
 
     def __init__(self, log_queue: queue = None):
         self.cash_filter = []
@@ -61,7 +62,6 @@ class AssetAllocation:
 
         self.idirectory = None
         self.isin_filter = []
-        self.version = '0.01'
         self.language = 'de'
         self.pp_file = None
         self.pp_data = {}
@@ -96,7 +96,7 @@ class AssetAllocation:
         self.pp_data = rep.get_gpo_data()
 
         rep = AboutReport()
-        rep.create(self.version)
+        rep.create(AssetAllocation.VERSION)
 
     def parse_args(self):
         arg_parser = argparse.ArgumentParser()
