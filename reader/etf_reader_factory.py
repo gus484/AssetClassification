@@ -21,7 +21,7 @@ class EtfReaderFactory:
     }
 
     @staticmethod
-    def get_reader(fpath):
+    def get_reader(fpath) -> EtfReader:
         reader = None
         file_name = Path(fpath).name
 
@@ -57,7 +57,11 @@ class EtfReaderFactory:
 
         if r.isin == EtfReader.NOT_EXIST:
             log.warning(f"Could not get ISIN for {r.fpath}")
-            return None
+            r.set_default_isin()
+
+        if r.asset.name == EtfReader.NOT_EXIST:
+            log.warning(f"Could not get Name for {r.fpath}")
+            r.set_default_name()
 
         if r.isin not in isin_filter and len(isin_filter) > 0:
             return None

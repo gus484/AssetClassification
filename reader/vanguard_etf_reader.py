@@ -25,14 +25,11 @@ class VanguardEtfReader(EtfReader):
         name = self.sheet.cell(4, 1).value
         last_update = self.sheet.cell(5, 1).value[4:]
 
-        # date_format = '%d. %b %Y'
-        # date_obj = datetime.strptime(last_update, date_format)
         date_obj = self.parse_date(last_update)
         last_update = date_obj.strftime('%d.%m.%Y')
 
         self.isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
-        print(self.asset)
 
     def read_sheet(self):
         for i in range(self.start_row, self.sheet.max_row):

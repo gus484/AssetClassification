@@ -27,6 +27,8 @@ class FundFamily(Enum):
 
 
 class EtfReader:
+    NAME_COUNTER = 0
+    ISIN_COUNTER = 0
     ISIN_LOOKUP = None
     ISIN_TO_NAME_LOOKUP = None
     NOT_EXIST = '----'
@@ -39,6 +41,7 @@ class EtfReader:
         self.sheet = None
         self.values = []
         self.isin = ''
+        self.fund_family = None
 
     def update_region(self, region: str, weight: float) -> None:
         if region not in self.asset.regions:
@@ -114,6 +117,16 @@ class EtfReader:
             path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", fund_family + ".json")
             EtfReader.REGION_MAPPING[fund_family] = EtfReader.read_json(path_to_mapping)
         return EtfReader.REGION_MAPPING[fund_family].get(name, name)
+
+    def set_default_isin(self):
+        EtfReader.ISIN_COUNTER += 1
+        self.isin = f'XX{EtfReader.ISIN_COUNTER:09d}0'
+        self.asset.isin = self.isin
+
+    def set_default_name(self):
+        EtfReader.NAME_COUNTER += 1
+        self.name = f'{self.fund_family}ETF{EtfReader.NAME_COUNTER:02d}'
+        self.asset.name = self.name
 
     @abc.abstractmethod
     def read_sheet(self):
