@@ -1,6 +1,5 @@
 import csv
 import os
-from datetime import datetime
 from locale import atof
 
 from reader.asset import Asset, Value
@@ -27,8 +26,7 @@ class ISharesEtfReader(EtfReader):
                 if line_no == 1:
                     last_update = line[1]
                     break
-        date_format = '%d.%b.%Y'
-        date_obj = datetime.strptime(last_update, date_format)
+        date_obj = self.parse_date(last_update)
         last_update = date_obj.strftime('%d.%m.%Y')
 
         self.isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
