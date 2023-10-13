@@ -18,11 +18,11 @@ class SpdrEtfReader(EtfReader):
     def read_asset(self):
         name = self.sheet.cell(1, 2).value
         last_update = self.sheet.cell(4, 2).value
+        self.isin = self.sheet.cell(2, 2).value
 
         date_obj = self.parse_date(last_update)
         last_update = date_obj.strftime('%d.%m.%Y')
 
-        self.isin = EtfReader.get_isin_from_file_name(self.fund_family, name)
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
 
     def read_sheet(self):
