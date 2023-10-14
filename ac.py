@@ -77,6 +77,7 @@ class AssetAllocation:
 
     def merge_holdings(self):
         positions = Holdings.merge_holdings(self.assets)
+        positions = Holdings.remove_cash_positions(positions, self.cash_filter)
         duplicates = Holdings.find_duplicates(list(positions.keys()))
         self.holdings = Holdings.remove_duplicates(positions, duplicates)
         self.overlaps = Holdings.create_overlaps(self.holdings)

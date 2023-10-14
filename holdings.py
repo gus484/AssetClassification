@@ -64,6 +64,12 @@ class Holdings:
         return positions
 
     @staticmethod
+    def remove_cash_positions(positions: list[Position], cash_filter: list[str]):
+        for cash_name in cash_filter:
+            positions.pop(cash_name, None)
+        return positions
+
+    @staticmethod
     def create_overlaps(holdings: dict[str: Position]) -> dict:
         """
         Returns a dict with etf isin as key and a dict as value. The sub dict contains the etf isin as keys and a tuple
