@@ -21,6 +21,7 @@ log = logging.getLogger("ac")
 
 class FundFamily(Enum):
     ISHARES = 'ISHARES'
+    LGIM = "LGIM"
     SPDR = "SPDR"
     VANECK = 'VANECK'
     VANGUARD = 'VANGUARD'
@@ -57,9 +58,9 @@ class EtfReader:
         except InvalidFileException as e:
             log.error(f"Could not read file: {self.fpath}")
 
-    def parse_date(self, last_update: str) -> datetime:
+    def parse_date(self, last_update: str, date_formats: list[str] = None) -> datetime:
         try:
-            date_obj = dateparser.parse(last_update)
+            date_obj = dateparser.parse(last_update, date_formats=date_formats)
             return date_obj
         except ValueError:
             return datetime.now()

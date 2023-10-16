@@ -5,6 +5,7 @@ from pathlib import Path
 
 from reader.etf_reader import FundFamily, EtfReader
 from reader.ishares_etf_reader import ISharesEtfReader
+from reader.lgim_etf_reader import LGIMEtfReader
 from reader.spdr_etf_reader import SpdrEtfReader
 from reader.vaneck_etf_reader import VanEckEtfReader
 from reader.vanguard_etf_reader import VanguardEtfReader
@@ -15,6 +16,7 @@ log = logging.getLogger("ac")
 class EtfReaderFactory:
     READERS = {
         FundFamily.ISHARES: (ISharesEtfReader.REGEX, ISharesEtfReader),
+        FundFamily.LGIM: (LGIMEtfReader.REGEX, LGIMEtfReader),
         FundFamily.SPDR: (SpdrEtfReader.REGEX, SpdrEtfReader),
         FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
         FundFamily.VANGUARD: (VanguardEtfReader.REGEX, VanguardEtfReader)
@@ -30,6 +32,10 @@ class EtfReaderFactory:
                 log.debug(f"{k} => {file_name}")
                 reader = v[1](fpath)
                 break
+
+        if reader is None:
+            log.error(f"Could not identify ETF {file_name}")
+
         return reader
 
     @staticmethod
