@@ -1,4 +1,3 @@
-import os
 from unittest import TestCase
 
 from reader.asset import Asset
@@ -44,4 +43,4 @@ class TestEtfReader(TestCase):
     def test_get_region_code(self):
         reader = EtfReader(r"not\existing")
         code = reader.get_region_code(FundFamily.ISHARES.value, "Spanien")
-        self.assertEqual("SPE", code)
+        self.assertEqual("ESP", code)
