@@ -14,16 +14,19 @@ The script can be used either by command line or via the GUI.
 
 #### Kommandozeilenparameter / command line parameters
 
-* "-id", "--idirectory" - input directory
-* "-od", "--odirectory" - output path for html report
+* "-src", "--src_path" - source path
+* "-target", "--target_path" - target path for html report
 * "-is", "--isin" - whitespace separated list of interested ISINs
-* "-gpo", "--gpo_desc" - path to region mapping json file
+* "-region", "--region_mapping" - path to region mapping json file
+* "-l", "--language" - language ['de', 'en']
 
 #### Unterstütze Anbieter / supported issuers
 
-* Vanguard
 * iShares
+* L&G
+* SPDR
 * VanEck
+* Vanguard
 
 #### Funktionsumfang / functions
 
@@ -40,8 +43,8 @@ The script can be used either by command line or via the GUI.
 #### Pläne / further plans
 
 * :white_check_mark: ~~Report-Sprachauswahl via GUI / change report language via GUI~~
-* :wrench: Fortschrittsanzeige ~~und Logging~~ in der GUI / GUI displays the progress ~~and log messages~~
-* Unterstützung weiterer Anbieter / support for other issuers
+* :white_check_mark: ~~Fortschrittsanzeige und Logging in der GUI / GUI displays the progress and log messages~~
+* :white_check_mark: ~~Unterstützung weiterer Anbieter / support for other issuers~~
 * automatischer Download / automatic download
 * :wrench: Anbindung an Portfolio Performance / link to Portfolio Performance
 * Branchen-Auswertung / Sector evaluation
