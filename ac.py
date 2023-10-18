@@ -99,23 +99,30 @@ class AssetAllocation:
         rep = AboutReport()
         rep.create(AssetAllocation.VERSION)
 
-    def parse_args(self):
+    def parse_args(self) -> int:
         arg_parser = argparse.ArgumentParser()
-        arg_parser.add_argument("-id", "--idirectory", help="input directory")
-        arg_parser.add_argument("-od", "--odirectory", help="output path for html report")
+        arg_parser.add_argument("-src", "--src_path", help="source path")
+        arg_parser.add_argument("-target", "--target_path", help="target path for html report")
         arg_parser.add_argument("-is", "--isin", nargs='+', help="list of interested ISINs")
-        arg_parser.add_argument("-gpo", "--gpo_desc", help="path to region mapping json file")
+        arg_parser.add_argument("-region", "--region_mapping", help="path to region mapping json file")
         arg_parser.add_argument("-l", "--language", help="language")
         args = arg_parser.parse_args()
 
-        if args.gpo_desc is not None:
-            report.region.Gpo.set_path_to_mapping_file(args.gpo_desc)
+        if args.region_mapping is not None:
+            report.region.Gpo.set_path_to_mapping_file(args.region_mapping)
 
         src_path = pathlib.Path().resolve()
-        if args.odirectory is not None:
-            Report.set_paths(src_path, args.odirectory)
 
-        self.idirectory = args.idirectory
+        if args.src_path is None or not os.path.isdir(args.src_path):
+            log.error("No source or not existing path defined!")
+            return False
+
+        if args.target_path is None or not os.path.isdir(args.target_path):
+            log.error("No target or not existing path defined!")
+            return False
+
+        Report.set_paths(src_path, args.target_path)
+        self.idirectory = args.src_path
 
         if args.isin is not None:
             self.isin_filter = args.isin
@@ -125,6 +132,8 @@ class AssetAllocation:
 
         Translation.set_language(self.language)
         report.region.RegionMapping.set_path_to_mapping_file(self.language)
+
+        return True
 
     def set_parameters(self, idirectory, odirectory, isin_filter, region_mapping, lang, pp_file):
         self.idirectory = idirectory
@@ -154,7 +163,7 @@ class AssetAllocation:
         self.merge_holdings()
         log.info("Stage 3: create report")
         self.report()
-        if not self.pp_file == '':
+        if self.pp_file:
             log.info("Stage 4: write to pp file")
             pp = PPUpdater(self.pp_file, '')
             pp.run(self.pp_data)
@@ -163,5 +172,6 @@ class AssetAllocation:
 
 if __name__ == '__main__':
     app = AssetAllocation()
-    app.parse_args()
+    if not app.parse_args():
+        exit(0)
     app.run()
