@@ -9,6 +9,7 @@ class RegionReport(Report):
     def __init__(self, assets, toc):
         super().__init__(self.HTML_REGIONS, assets, ['js/chart.umd.min.js',
                                                      'js/table.js'], toc)
+        self.gpo_store = {}
 
     def create(self):
         getcontext().prec = 4
@@ -40,6 +41,7 @@ class RegionReport(Report):
             self.doc.write_div('', tag_id=f"div_tbl_{isin}")
 
             gpo = self.convert_gpo_decimal_to_str(gpo)
+            self.gpo_store[isin] = gpo
 
             self.doc.write_run_script_after_doc_loaded('print_doughnut_chart',
                                                        canvas_id,
@@ -53,6 +55,9 @@ class RegionReport(Report):
                                                        f"'div_tbl_{isin}'")
 
         self.write_file(self.HTML_REGIONS)
+
+    def get_gpo_data(self):
+        return self.gpo_store
 
     def add_to_gpo_dict(self, gpo, asset_region):
         lmapping = region.Gpo.get_mapping(asset_region.short)
