@@ -46,7 +46,7 @@ class EtfReader:
 
     def update_region(self, region: str, weight: float) -> None:
         if region not in self.asset.regions:
-            self.asset.regions[region] = Region(region, weight)
+            self.asset.regions[region] = Region(region, weight, 1)
         else:
             self.asset.regions[region].weight += weight
             self.asset.regions[region].num_of_countries += 1
