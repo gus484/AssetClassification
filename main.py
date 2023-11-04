@@ -23,6 +23,7 @@ class App:
     CONFIG_FILE_PATH = 'config.json'
 
     def __init__(self):
+        self.app_path = None
         self.version = "0.2"
         self.w = None
         self.language_code = None
@@ -115,12 +116,13 @@ class App:
         self.w.title(f"AssetAllocation (Ver. {self.version})")
         self.create_menu_bar()
 
-        curr_path = os.getcwd()
+        self.app_path = os.getcwd()
+        img_path = os.path.join(self.app_path, "images")
 
-        self.img_folder = PhotoImage(file=os.path.join(curr_path, r"images\folder.png"))
-        self.img_remove = PhotoImage(file=os.path.join(curr_path, r"images\remove.png"))
-        self.img_add = PhotoImage(file=os.path.join(curr_path, r"images\add.png"))
-        self.w.iconbitmap('images/pie.ico')
+        self.img_folder = PhotoImage(file=os.path.join(img_path, "folder.png"))
+        self.img_remove = PhotoImage(file=os.path.join(img_path, "remove.png"))
+        self.img_add = PhotoImage(file=os.path.join(img_path, "add.png"))
+        self.w.iconbitmap(os.path.join(img_path, "pie.ico"))
 
         fm = Frame(master=self.w, pady=5)
 
