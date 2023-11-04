@@ -122,7 +122,10 @@ class App:
         self.img_folder = PhotoImage(file=os.path.join(img_path, "folder.png"))
         self.img_remove = PhotoImage(file=os.path.join(img_path, "remove.png"))
         self.img_add = PhotoImage(file=os.path.join(img_path, "add.png"))
-        self.w.iconbitmap(os.path.join(img_path, "pie.ico"))
+        if os.name == 'nt':
+            self.w.iconbitmap(os.path.join(img_path, "pie.ico"))
+        else:
+            self.w.iconphoto(False, os.path.join(img_path, "pie.png"))
 
         fm = Frame(master=self.w, pady=5)
 
