@@ -125,7 +125,7 @@ class App:
         if os.name == 'nt':
             self.w.iconbitmap(os.path.join(img_path, "pie.ico"))
         else:
-            self.w.iconphoto(False, os.path.join(img_path, "pie.png"))
+            self.w.iconphoto(False, PhotoImage(file=os.path.join(img_path, "pie.png")))
 
         fm = Frame(master=self.w, pady=5)
 
