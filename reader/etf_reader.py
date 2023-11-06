@@ -14,7 +14,10 @@ from openpyxl.utils.exceptions import InvalidFileException
 
 from report.region import Region
 
-locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
+try:
+    locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
+except locale.Error as e:
+    print("Could not load local 'de_DE.utf8'")
 
 log = logging.getLogger("ac")
 
