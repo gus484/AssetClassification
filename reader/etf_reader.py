@@ -118,7 +118,7 @@ class EtfReader:
     def get_region_code(fund_family, name):
         if fund_family not in EtfReader.REGION_MAPPING:
             path_to_mapping = Path(__file__).parent
-            path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", fund_family + ".json")
+            path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", "location_codes", fund_family + ".json")
             EtfReader.REGION_MAPPING[fund_family] = EtfReader.read_json(path_to_mapping)
         return EtfReader.REGION_MAPPING[fund_family].get(name, name)
 
