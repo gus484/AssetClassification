@@ -3,6 +3,7 @@ import os.path
 import shutil
 
 from report.html import Html
+from report.translation import Translation as T
 
 log = logging.getLogger("ac")
 
@@ -32,9 +33,9 @@ class Report:
             self.doc.write_toc(toc)
 
     def create_main_menu(self):
-        self.doc.write_link_bar([('Holdings', 'holdings.html'),
-                                 ('Cluster', 'cluster.html'),
-                                 ('Regions', 'regions.html')], self.page)
+        self.doc.write_link_bar([(T.get_name('companys'), 'holdings.html'),
+                                 (T.get_name('cluster_risk'), 'cluster.html'),
+                                 (T.get_name('regions'), 'regions.html')], self.page)
 
     def create_toc_from_assets(self):
         toc = []
@@ -43,7 +44,7 @@ class Report:
         return toc
 
     def write_about_link(self):
-        data = '<a href="about.html">About</a>'
+        data = f'<a href="about.html">{T.get_name("about")}</a>'
         self.doc.write_div(data, 'about')
 
     def write_file(self, report_type):

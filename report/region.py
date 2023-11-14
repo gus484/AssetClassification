@@ -9,11 +9,11 @@ log = logging.getLogger("ac")
 
 class RegionMapping:
     mapping = None
-    mapping_file_path = os.path.join("mappings", "de_region_names.json")
+    mapping_file_path = os.path.join("mappings", "translations", "en", "en_region_names.json")
 
     @staticmethod
     def set_path_to_mapping_file(path):
-        path = os.path.join("mappings", f"{path}_region_names.json")
+        path = os.path.join("mappings", "translations", f"{path}", f"{path}_region_names.json")
         if os.path.exists(path):
             RegionMapping.mapping_file_path = path
 
@@ -26,6 +26,11 @@ class RegionMapping:
 
     @staticmethod
     def load_mapping():
+        if not os.path.exists(RegionMapping.mapping_file_path):
+            log.error(f"Could not find region mapping: {RegionMapping.mapping_file_path}")
+            RegionMapping.mapping = {}
+            return
+
         with open(RegionMapping.mapping_file_path, 'r', encoding="utf-8") as f:
             try:
                 RegionMapping.mapping = json.load(f)
