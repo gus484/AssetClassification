@@ -75,3 +75,5 @@ class Report:
                         os.path.join(Report.REPORT_PATH, "img"), dirs_exist_ok=True)
         shutil.copytree(os.path.join(Report.REPORT_SRC_PATH, "html", "css"),
                         os.path.join(Report.REPORT_PATH, "css"), dirs_exist_ok=True)
+        shutil.copytree(os.path.join(Report.REPORT_SRC_PATH, "html", "license"),
+                        os.path.join(Report.REPORT_PATH, "license"), dirs_exist_ok=True)
