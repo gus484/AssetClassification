@@ -21,6 +21,10 @@ from report.translation import Translation
 
 class App:
     CONFIG_FILE_PATH = 'config.json'
+    LANGUAGES = {
+        "de": "Deutsch",
+        "en": "English"
+    }
 
     def __init__(self):
         self.app_path = None
@@ -52,6 +56,7 @@ class App:
 
         self.menubar = None
         self.settings_menu = None
+        self.sub_language_menu = None
         self.pb_progress = None
         self.progress_step_size = 25
 
@@ -84,7 +89,7 @@ class App:
         for isin in isin_filter:
             self.tv_isin.insert('', 'end', values=(isin, ""))
 
-        self.change_language(self.config.get('language', 'en'))
+        self.set_language(self.config.get('language', 'en'))
 
         if os.path.exists(self.config.get("mapping", "")):
             mapping_path = self.config.get("mapping")
@@ -95,6 +100,14 @@ class App:
             self.source_path.set(self.config.get("input", ""))
         if os.path.exists(self.config.get("report", "")):
             self.target_path.set(self.config.get("report", ""))
+
+    def set_language(self, selected_short: str):
+        idx = 0
+        for short, full in App.LANGUAGES.items():
+            pre = "• " if selected_short == short else "  "
+            self.sub_language_menu.entryconfigure(idx, label=pre + full)
+            idx += 1
+        self.change_language(selected_short)
 
     def write_config(self):
         self.config['mapping'] = self.d_region_mappings[self.cb_mapping.get()]
@@ -226,12 +239,13 @@ class App:
         self.w.config(menu=self.menubar)
 
         self.settings_menu = Menu(self.menubar, tearoff=0)
-        sub_menu = Menu(self.settings_menu, tearoff=0)
-        sub_menu.add_command(label='de', command=lambda: self.change_language('de'))
-        sub_menu.add_command(label='en', command=lambda: self.change_language('en'))
+        self.sub_language_menu = Menu(self.settings_menu, tearoff=0)
+        for short, name in App.LANGUAGES.items():
+            self.sub_language_menu.add_command(label=name,
+                                               command=lambda l=short: self.set_language(l))
         self.settings_menu.add_cascade(
             label="Language",
-            menu=sub_menu
+            menu=self.sub_language_menu
         )
 
         self.menubar.add_cascade(
