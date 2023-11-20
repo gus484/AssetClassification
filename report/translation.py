@@ -33,7 +33,7 @@ class Translation:
 
     @staticmethod
     def set_language(lang):
-        path = os.path.join("mappings", f"{lang}_translation.json")
+        path = os.path.join("mappings", "translations", f"{lang}", f"{lang}_translation.json")
         if os.path.exists(path) and os.path.isfile(path):
             Translation.path = path
             Translation.load_translation()

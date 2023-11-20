@@ -1,8 +1,12 @@
 {
+  "company": "Unternehmen",
   "name": "Name",
   "isin": "ISIN",
   "weight": "Gewichtung",
+  "total_weight": "Gesamt-Gewichtung",
+  "companys": "Unternehmen",
   "cluster_risk": "Klumpen",
+  "regions": "Regionen",
   "nbr_of_holdings": "Anz. Positionen",
   "nbr_of_etf_clusters": "Anz. Klumpen ETF",
   "nbr_of_cluster_positions": "Klumpen",

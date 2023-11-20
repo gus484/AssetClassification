@@ -1,7 +1,6 @@
 import json
 import logging
 import os.path
-import pprint
 from dataclasses import dataclass
 from json import JSONDecodeError
 
@@ -10,11 +9,11 @@ log = logging.getLogger("ac")
 
 class RegionMapping:
     mapping = None
-    mapping_file_path = "mappings/de_region_names.json"
+    mapping_file_path = os.path.join("mappings", "translations", "en", "en_region_names.json")
 
     @staticmethod
     def set_path_to_mapping_file(path):
-        path = f"mappings/{path}_region_names.json"
+        path = os.path.join("mappings", "translations", f"{path}", f"{path}_region_names.json")
         if os.path.exists(path):
             RegionMapping.mapping_file_path = path
 
@@ -27,6 +26,11 @@ class RegionMapping:
 
     @staticmethod
     def load_mapping():
+        if not os.path.exists(RegionMapping.mapping_file_path):
+            log.error(f"Could not find region mapping: {RegionMapping.mapping_file_path}")
+            RegionMapping.mapping = {}
+            return
+
         with open(RegionMapping.mapping_file_path, 'r', encoding="utf-8") as f:
             try:
                 RegionMapping.mapping = json.load(f)
@@ -37,7 +41,7 @@ class RegionMapping:
 
 class Gpo:
     mapping = None
-    mapping_file_path = "mappings/region/gpo.json"
+    mapping_file_path = os.path.join("mappings", "region", "gpo.json")
 
     @staticmethod
     def set_path_to_mapping_file(path):
@@ -81,6 +85,7 @@ class Gpo:
     def load_mapping():
         if not os.path.exists(Gpo.mapping_file_path) or not os.path.isfile(Gpo.mapping_file_path):
             log.error("the region mapping file not exist")
+            Gpo.mapping = {}
             return
 
         with open(Gpo.mapping_file_path, 'r', encoding="utf-8") as f:
@@ -97,9 +102,3 @@ class Region:
     short: str
     weight: float
     num_of_countries: int = 0
-
-
-if __name__ == "__main__":
-    Gpo.load_mapping()
-    m = Gpo.init_mapping(Gpo.mapping)
-    pprint.pprint(m)

@@ -1,8 +1,12 @@
 {
+  "company": "Company",
   "name": "Name",
   "isin": "ISIN",
   "weight": "Weight",
+  "total_weight": "Total weight",
+  "companys": "Companys",
   "cluster_risk": "Cluster",
+  "regions": "Regions",
   "nbr_of_holdings": "Number of holdings",
   "nbr_of_etf_clusters": "Number of cluster ETFs",
   "nbr_of_cluster_positions": "Number of clusters",
