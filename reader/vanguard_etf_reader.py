@@ -5,7 +5,7 @@ from reader.etf_reader import EtfReader, FundFamily
 
 
 class VanguardEtfReader(EtfReader):
-    REGEX = r'([\(\)\s\w]*\s\-\s)*(\d+.\d+.\d+)\.(xlsx)'
+    REGEX = r'(Vanguard)([\D\s\(\)\-]+)(\s\-\s)*(\d{1,2}.\d{1,2}.\d{2,4})\.(xlsx)'
     DATE_FORMATS = [
         '%d. %B %Y',
         '%d. %b. %Y'
