@@ -31,9 +31,9 @@ class FundFamily(Enum):
 
 
 class LocationCodes(Enum):
-    DE_FULL_NAME: "de_full_name.json"
-    EN_FULL_NAME: "en_full_name.json"
-    ALPHA_2_CODE: "alpha_2_code.json"
+    DE_FULL_NAME = "de_full_name.json"
+    EN_FULL_NAME = "en_full_name.json"
+    ALPHA_2_CODE = "alpha_2_code.json"
 
 
 class EtfReader:
@@ -121,12 +121,12 @@ class EtfReader:
                 return {}
 
     @staticmethod
-    def get_region_code(fund_family, name):
-        if fund_family not in EtfReader.REGION_MAPPING:
+    def get_region_code(location_code, name):
+        if location_code not in EtfReader.REGION_MAPPING:
             path_to_mapping = Path(__file__).parent
-            path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", "location_codes", fund_family + ".json")
-            EtfReader.REGION_MAPPING[fund_family] = EtfReader.read_json(path_to_mapping)
-        return EtfReader.REGION_MAPPING[fund_family].get(name, name)
+            path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", "location_codes", location_code.value)
+            EtfReader.REGION_MAPPING[location_code] = EtfReader.read_json(path_to_mapping)
+        return EtfReader.REGION_MAPPING[location_code].get(name, name)
 
     def set_default_isin(self):
         EtfReader.ISIN_COUNTER += 1
