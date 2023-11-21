@@ -22,5 +22,6 @@
   "preferences": "Einstellungen",
   "about": "Über",
   "language": "Sprache",
-  "log_messages": "Log-Nachrichten"
+  "log_messages": "Log-Nachrichten",
+  "log_file": "Log-Datei"
 }

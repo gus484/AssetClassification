@@ -20,7 +20,8 @@ from report.translation import Translation
 
 
 class App:
-    CONFIG_FILE_PATH = 'config.json'
+    CONFIG_FILE_PATH = "config.json"
+    LOG_FILE_PATH = "asset.log"
     LANGUAGES = {
         "de": "Deutsch",
         "en": "English"
@@ -181,6 +182,9 @@ class App:
         dlg_etf_lib = DlgEtfLib(self.w)
         dlg_etf_lib.mainloop()
 
+    def show_log_file(self):
+        os.startfile(self.LOG_FILE_PATH)
+
     def create_isin_filter(self, parent_frame: Frame):
         r1 = Frame(parent_frame)
         r2 = Frame(parent_frame, pady=17)
@@ -243,6 +247,9 @@ class App:
         for short, name in App.LANGUAGES.items():
             self.sub_language_menu.add_command(label=name,
                                                command=lambda l=short: self.set_language(l))
+
+        self.settings_menu.add_command(label="Log file", command=self.show_log_file)
+
         self.settings_menu.add_cascade(
             label="Language",
             menu=self.sub_language_menu
@@ -331,6 +338,7 @@ class App:
         self.lb_log.config(text=Translation.get_name('log_messages'))
         self.lb_isin_filter.config(text=Translation.get_name('isin_filter'))
         self.menubar.entryconfig(1, label=Translation.get_name('preferences'))
+        self.settings_menu.entryconfig(0, label=Translation.get_name('log_file'))
         self.settings_menu.entryconfig(1, label=Translation.get_name('language'))
         self.menubar.entryconfig(3, label=Translation.get_name('about'))
 
