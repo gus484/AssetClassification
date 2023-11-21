@@ -22,5 +22,7 @@
   "preferences": "Preferences",
   "about": "About",
   "language": "Language",
-  "log_messages": "Log messages"
+  "log_messages": "Log messages",
+  "NO_SRC_PATH": "No source or not existing path defined!",
+  "NO_TARGET_PATH": "No target or not existing path defined!"
 }

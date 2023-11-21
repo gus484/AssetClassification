@@ -410,8 +410,16 @@ class App:
                 run = False
 
     def run_script(self):
-        self.btn_run_script['state'] = tkinter.DISABLED
+        # check paths
+        if self.source_path.get() == "":
+            self.tv_log.insert('', 'end', values=("ERROR", Translation.get_name("NO_SRC_PATH")))
+            return
 
+        if self.target_path.get() == "":
+            self.tv_log.insert('', 'end', values=("ERROR", Translation.get_name("NO_TARGET_PATH")))
+            return
+
+        self.btn_run_script['state'] = tkinter.DISABLED
         self.write_config()
 
         # clear log view
