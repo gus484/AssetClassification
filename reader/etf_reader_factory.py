@@ -9,6 +9,7 @@ from reader.lgim_etf_reader import LGIMEtfReader
 from reader.spdr_etf_reader import SpdrEtfReader
 from reader.vaneck_etf_reader import VanEckEtfReader
 from reader.vanguard_etf_reader import VanguardEtfReader
+from reader.xtrackers_etf_reader import XtrackersEtfReader
 
 log = logging.getLogger("ac")
 
@@ -19,7 +20,8 @@ class EtfReaderFactory:
         FundFamily.LGIM: (LGIMEtfReader.REGEX, LGIMEtfReader),
         FundFamily.SPDR: (SpdrEtfReader.REGEX, SpdrEtfReader),
         FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
-        FundFamily.VANGUARD: (VanguardEtfReader.REGEX, VanguardEtfReader)
+        FundFamily.VANGUARD: (VanguardEtfReader.REGEX, VanguardEtfReader),
+        FundFamily.XTRACKERS: (XtrackersEtfReader.REGEX, XtrackersEtfReader)
     }
 
     @staticmethod

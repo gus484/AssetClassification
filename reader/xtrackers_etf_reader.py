@@ -1,0 +1,55 @@
+import os
+import re
+from datetime import date
+
+from reader.asset import Asset, Value
+from reader.etf_reader import EtfReader, FundFamily
+
+
+class XtrackersEtfReader(EtfReader):
+    REGEX = r'(Constituent)\_([A-Za-z0-9]+)\.(xlsx)'
+    DATE_FORMATS = [
+        '%d. %B %Y',
+        '%d. %b. %Y'
+    ]
+
+    def __init__(self, fpath: str):
+        super().__init__(fpath)
+        self.fund_family = FundFamily.XTRACKERS.value
+        self.start_row = 5
+        self.ticker_col = 1
+        self.name_col = 2
+        self.weight_col = 11
+        self.region_col = 3
+        self.read_sheet_from_wb()
+
+    def read_asset(self):
+        name = os.path.basename(self.fpath)
+        # last_update = self.sheet.cell(5, 1).value[4:]
+
+        # date_obj = self.parse_date(last_update)
+        # last_update = date_obj.strftime('%d.%m.%Y')
+        last_update = date.today()
+
+        x = re.search(self.REGEX, name)
+        if x is not None:
+            self.isin = x[2]
+        self.asset = Asset(name, self.isin, 0.0, last_update, [])
+        print(self.asset)
+
+    def read_sheet(self):
+        for i in range(self.start_row, self.sheet.max_row):
+            name = self.sheet.cell(i, self.name_col).value
+            if name is None:
+                break
+            weight = self.sheet.cell(i, self.weight_col).value
+            print(weight)
+            # weight = atof(weight)
+            ticker = self.sheet.cell(i, self.ticker_col).value
+            region = self.sheet.cell(i, self.region_col).value
+            region = EtfReader.get_region_code(self.fund_family, region[:2])
+            a = Value(name, weight, weight, ticker, region)
+
+            self.update_region(region, weight)
+
+            self.asset.values.append(a)

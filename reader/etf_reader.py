@@ -28,6 +28,7 @@ class FundFamily(Enum):
     SPDR = "SPDR"
     VANECK = 'VANECK'
     VANGUARD = 'VANGUARD'
+    XTRACKERS = "XTRACKERS"
 
 
 class EtfReader:
