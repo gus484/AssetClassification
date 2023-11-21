@@ -30,6 +30,12 @@ class FundFamily(Enum):
     VANGUARD = 'VANGUARD'
 
 
+class LocationCodes(Enum):
+    DE_FULL_NAME: "de_full_name.json"
+    EN_FULL_NAME: "en_full_name.json"
+    ALPHA_2_CODE: "alpha_2_code.json"
+
+
 class EtfReader:
     NAME_COUNTER = 0
     ISIN_COUNTER = 0
