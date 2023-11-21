@@ -1,5 +1,5 @@
 from reader.asset import Asset, Value
-from reader.etf_reader import EtfReader, FundFamily
+from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class SpdrEtfReader(EtfReader):
@@ -35,7 +35,7 @@ class SpdrEtfReader(EtfReader):
                 continue
             ticker = self.sheet.cell(i, self.ticker_col).value
             region = self.sheet.cell(i, self.region_col).value
-            region = EtfReader.get_region_code(self.fund_family, region)
+            region = EtfReader.get_region_code(LocationCodes.EN_FULL_NAME, region)
             a = Value(name, weight, weight, ticker, region)
 
             self.update_region(region, weight)

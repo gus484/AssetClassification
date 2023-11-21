@@ -2,7 +2,7 @@ import os
 from locale import atof
 
 from reader.asset import Asset, Value
-from reader.etf_reader import EtfReader, FundFamily
+from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class VanEckEtfReader(EtfReader):
@@ -42,7 +42,7 @@ class VanEckEtfReader(EtfReader):
             ticker = self.sheet.cell(i, self.ticker_col).value
             region = self.sheet.cell(i, self.region_col).value
             region = region[:2]
-            region = EtfReader.get_region_code(FundFamily.VANGUARD.value, region)
+            region = EtfReader.get_region_code(LocationCodes.ALPHA_2_CODE, region)
             a = Value(name, weight, weight, ticker, region)
 
             self.update_region(region, weight)

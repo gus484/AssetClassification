@@ -3,7 +3,7 @@ import os
 from locale import atof
 
 from reader.asset import Asset, Value
-from reader.etf_reader import EtfReader, FundFamily
+from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class ISharesEtfReader(EtfReader):
@@ -53,7 +53,7 @@ class ISharesEtfReader(EtfReader):
                 weight = atof(weight.replace("%", "").replace("\xa0", ""))
                 ticker = line[self.ticker_col]
                 region = line[self.region_col]
-                region = EtfReader.get_region_code(self.fund_family, region)
+                region = EtfReader.get_region_code(LocationCodes.DE_FULL_NAME, region)
                 a = Value(name, weight, weight, ticker, region)
 
                 self.update_region(region, weight)

@@ -117,11 +117,11 @@ class AssetAllocation:
         src_path = pathlib.Path().resolve()
 
         if args.src_path is None or not os.path.isdir(args.src_path):
-            log.error("No source or not existing path defined!")
+            log.error(Translation.get_name("NO_SRC_PATH"))
             return False
 
         if args.target_path is None or not os.path.isdir(args.target_path):
-            log.error("No target or not existing path defined!")
+            log.error(Translation.get_name("NO_TARGET_PATH"))
             return False
 
         Report.set_paths(src_path, args.target_path)

@@ -1,11 +1,11 @@
 from locale import atof
 
 from reader.asset import Asset, Value
-from reader.etf_reader import EtfReader, FundFamily
+from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class VanguardEtfReader(EtfReader):
-    REGEX = r'([\(\)\s\w]*\s\-\s)*(\d+.\d+.\d+)\.(xlsx)'
+    REGEX = r'(Vanguard)([\D\s\(\)\-]+)(\s\-\s)*(\d{1,2}.\d{1,2}.\d{2,4})\.(xlsx)'
     DATE_FORMATS = [
         '%d. %B %Y',
         '%d. %b. %Y'
@@ -40,7 +40,7 @@ class VanguardEtfReader(EtfReader):
             weight = atof(weight.replace("%", "").replace("\xa0", ""))
             ticker = self.sheet.cell(i, self.ticker_col).value
             region = self.sheet.cell(i, self.region_col).value
-            region = EtfReader.get_region_code(self.fund_family, region)
+            region = EtfReader.get_region_code(LocationCodes.ALPHA_2_CODE, region)
             a = Value(name, weight, weight, ticker, region)
 
             self.update_region(region, weight)
