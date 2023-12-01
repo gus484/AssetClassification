@@ -7,7 +7,7 @@ from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class ISharesEtfReader(EtfReader):
-    REGEX = r'[A-Z]{4}\_(holdings)\.(csv)'
+    REGEX = r'[A-Z0-9]{4}\_(holdings)\.(csv)'
 
     def __init__(self, fpath: str):
         super().__init__(fpath)
