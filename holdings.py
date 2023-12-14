@@ -15,6 +15,12 @@ class Weight:
     weight_total: float
 
 
+@dataclass
+class Overlap:
+    isin: str
+    weights: Weight
+
+
 class Holdings:
 
     @staticmethod

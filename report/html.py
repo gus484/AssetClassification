@@ -60,8 +60,8 @@ class Html:
             self.html += f'<li><a href="#{d[1]}">{d[0]}</a></li>'
         self.html += '</ul></div>'
 
-    def write_table(self, tbl_caption, col_headlines, data):
-        self.html += f'<table><caption>{tbl_caption}</caption><thead><tr>'
+    def write_table(self, tbl_caption, col_headlines, data, tbl_id='', tbl_class='', tbl_style=''):
+        self.html += f'<table id="{tbl_id}" class="{tbl_class}" style="{tbl_style}"><caption>{tbl_caption}</caption><thead><tr>'
         for h in col_headlines:
             self.html += f'<th>{h}</th>'
         self.html += '</tr></thead>'
@@ -71,6 +71,10 @@ class Html:
                 self.html += f'<td>{str(col)}</td>'
             self.html += '</tr>'
         self.html += '</table>'
+
+    def write_button(self, name: str, on_click=None) -> None:
+        action = '' if on_click is None else f'onclick="{on_click}"'
+        self.html += f"<button {action}>{name}</button>"
 
     def write_script_tag(self, path):
         self.html += f'<script src="{path}"></script>'

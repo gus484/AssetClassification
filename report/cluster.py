@@ -1,7 +1,9 @@
 from dataclasses import dataclass, fields, field
-from report.translation import Translation as T
 
+from holdings import Overlap
+from reader.asset import Asset
 from report.report import Report
+from report.translation import Translation as T
 
 
 @dataclass
@@ -32,7 +34,8 @@ class ClusterReport(Report):
     def create(self, assets, overlaps):
         cds = []
         self.doc.write_script_tag('js/charts.js')
-        # data = self.create_cluster_data(assets, overlaps)
+        self.doc.write_script_tag('js/basics.js')
+        data = self.create_cluster_tbl_data(assets, overlaps)
 
         self.doc.write_div(f'<canvas id="chart_overview"></canvas>', 'chart_box')
 
@@ -40,11 +43,11 @@ class ClusterReport(Report):
             cd = self.calc_cluster(isin, holdings, assets)
             self.create_etf_info_box(cd)
             self.create_etf_bar_chart(cd, assets)
+            self.doc.write_button("Show holdings", f"showElement('tbl_{isin}')")
+            self.create_table(data[isin], isin)
             cds.append(cd)
 
         self.create_overview_bar_chart(cds)
-        # self.create_table(data)
-
         self.write_file(self.HTML_CLUSTER)
 
     def calc_cluster(self, isin, holdings, assets):
@@ -70,10 +73,8 @@ class ClusterReport(Report):
     def create_etf_info_box(self, cd):
         self.doc.write_infobox(cd.get_ibox_data(), cd.isin)
 
-    def create_table(self, data):
-        for d in data:
-            self.doc.write_infobox(d[0][0], d[0][1])
-            self.doc.write_table(d[1][0], d[1][1], d[1][2])
+    def create_table(self, data, isin: str):
+        self.doc.write_table(data[0], data[1], data[2], tbl_id=f"tbl_{isin}", tbl_style="display:none;")
 
     def create_etf_bar_chart(self, cd, assets):
         self.doc.write_div(f'<canvas id="chart_{cd.isin}"></canvas>', 'chart_box')
@@ -103,48 +104,31 @@ class ClusterReport(Report):
                                                    str(labels),
                                                    str(counts))
 
-    def create_cluster_data(self, assets, overlaps):
-        data = []
+    def create_cluster_tbl_data(self, assets: dict[str, Asset], overlaps: dict[str, Overlap]):
+        data = {}
 
-        for isin in overlaps:
-            d = []
-            tbl_head = f"{assets[isin].name} ({isin})"
-            row = []
-            cluster_risk_per = len(overlaps[isin]) * 100.0 / assets[isin].get_num_values()
-            cluster_risk = f"{len(overlaps[isin])} / {assets[isin].get_num_values()} ({cluster_risk_per:.2f}%)"
+        for curr_etf_isin in overlaps:
+            rows = []
+            tbl_head = f"{assets[curr_etf_isin].name} ({curr_etf_isin})"
+            etf_holdings = sorted(overlaps[curr_etf_isin].keys())
 
-            for holding in sorted(overlaps[isin].keys()):
-                row.append([holding, isin,
-                            f"{overlaps[isin][holding][isin][0]:.2f}",
-                            f"{overlaps[isin][holding][isin][1]:.2f}"])
+            for holding in etf_holdings:
+                holding_rows = self.create_holding_cluster(holding, overlaps[curr_etf_isin][holding])
+                rows.extend(holding_rows)
 
-                for ov_isin in overlaps[isin][holding]:
-                    if ov_isin == isin:
-                        continue
-                    row.append(["",
-                                ov_isin,
-                                f"{overlaps[isin][holding][ov_isin][0]:.2f}",
-                                f"{overlaps[isin][holding][ov_isin][1]:.2f}"])
-
-            ol_etfs = self.count_overlapping_etfs(isin, overlaps)
-            d.append([[("Name", assets[isin].name),
-                       ("ISIN", isin),
-                       ("Gewichtung", assets[isin].weight),
-                       ("Klumpen", cluster_risk),
-                       ("Klumpen ETF", ol_etfs),
-                       ("Datum", assets[isin].last_history_date)],
-                      isin])
-            d.append([tbl_head, ['Holding', 'ETF', 'Weight', 'Total Weight'], row])
-            data.append(d)
+            data[curr_etf_isin] = [tbl_head,
+                                   [T.get_name('company'), T.get_name('isin'), T.get_name('weight')],
+                                   rows]
         return data
 
-    def count_overlapping_etfs(self, isin, overlaps):
-        ol_etfs = {}
-        for v in overlaps[isin].values():
-            for vd in v:
-                if vd not in ol_etfs and vd != isin:
-                    ol_etfs[vd] = 0
-                elif vd != isin:
-                    ol_etfs[vd] += 1
-        # print(ol_etfs)
-        return len(ol_etfs)
+    def create_holding_cluster(self, holding: str, related_etfs):
+        row_head = [holding, '', 0.0]
+        rows = []
+
+        for isin in related_etfs:
+            row_head[2] += related_etfs[isin][0]
+            rows.append(['', isin,
+                         f"{related_etfs[isin][0]:.2f}"])
+        row_head[2] = f"{row_head[2]:.2f}"
+
+        return [row_head] + rows
