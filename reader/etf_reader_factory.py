@@ -1,27 +1,25 @@
+import configparser
 import glob
 import logging
+import os
 import re
 from pathlib import Path
 
 from reader.etf_reader import FundFamily, EtfReader
 from reader.ishares_etf_reader import ISharesEtfReader
-from reader.lgim_etf_reader import LGIMEtfReader
-from reader.spdr_etf_reader import SpdrEtfReader
-from reader.vaneck_etf_reader import VanEckEtfReader
 from reader.vanguard_etf_reader import VanguardEtfReader
-from reader.xtrackers_etf_reader import XtrackersEtfReader
 
 log = logging.getLogger("ac")
 
 
 class EtfReaderFactory:
     READERS = {
-        FundFamily.ISHARES: (ISharesEtfReader.REGEX, ISharesEtfReader),
-        FundFamily.LGIM: (LGIMEtfReader.REGEX, LGIMEtfReader),
-        FundFamily.SPDR: (SpdrEtfReader.REGEX, SpdrEtfReader),
-        FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
-        FundFamily.VANGUARD: (VanguardEtfReader.REGEX, VanguardEtfReader),
-        FundFamily.XTRACKERS: (XtrackersEtfReader.REGEX, XtrackersEtfReader)
+        FundFamily.ISHARES: ISharesEtfReader,
+        # FundFamily.LGIM: (LGIMEtfReader.REGEX, LGIMEtfReader),
+        # FundFamily.SPDR: (SpdrEtfReader.REGEX, SpdrEtfReader),
+        # FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
+        FundFamily.VANGUARD: VanguardEtfReader,
+        # FundFamily.XTRACKERS: (XtrackersEtfReader.REGEX, XtrackersEtfReader)
     }
 
     @staticmethod
@@ -29,10 +27,12 @@ class EtfReaderFactory:
         reader = None
         file_name = Path(fpath).name
 
-        for k, v in EtfReaderFactory.READERS.items():
-            if re.search(v[0], file_name) is not None:
-                log.debug(f"{k} => {file_name}")
-                reader = v[1](fpath)
+        for fund_family, reader_class in EtfReaderFactory.READERS.items():
+            config, config_name = EtfReaderFactory.check_reader(reader_class, file_name)
+            # TODO check all configs
+            if config is not None:
+                log.debug(f"{fund_family} => {file_name}")
+                reader = reader_class(fpath, config_name)
                 break
 
         if reader is None:
@@ -41,8 +41,40 @@ class EtfReaderFactory:
         return reader
 
     @staticmethod
+    def check_reader(reader, file_name):
+        for name, config in reader.CONFIGS.items():
+            regex = config['BASE']['regex']
+            if re.search(regex, file_name) is None:
+                continue
+
+            if config['BASE']['sub_detection'] == "False":
+                # if no sub detection is necessary  we know at this point the right config name
+                return config, name
+            return config, None
+        return None, None
+
+    @staticmethod
+    def read_config(family: FundFamily, reader: EtfReader):
+        search_word = f"{family.value.lower()}.ini"
+        file_list = glob.glob(os.path.join("reader", "configs") + '/*')
+        for file_path in file_list:
+            if not file_path.endswith(search_word):
+                continue
+
+            config = configparser.ConfigParser()
+            config.read(file_path)
+            reader.CONFIGS[os.path.basename(file_path)] = config
+
+    @staticmethod
+    def init_readers():
+        for family, reader_class in EtfReaderFactory.READERS.items():
+            EtfReaderFactory.read_config(family, reader_class)
+
+    @staticmethod
     def read_etfs_from_path(path, isin_filter):
         etfs = {}
+        EtfReaderFactory.init_readers()
+
         file_list = glob.glob(path + '/*')
         for file in file_list:
             try:

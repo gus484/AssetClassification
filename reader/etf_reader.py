@@ -1,4 +1,5 @@
 import abc
+import csv
 import json
 import locale
 import logging
@@ -37,6 +38,11 @@ class LocationCodes(Enum):
     ALPHA_2_CODE = "alpha_2_code.json"
 
 
+class FileTypes(Enum):
+    XLSX = "xlsx"
+    CSV = "csv"
+
+
 class EtfReader:
     NAME_COUNTER = 0
     ISIN_COUNTER = 0
@@ -45,7 +51,7 @@ class EtfReader:
     NOT_EXIST = '----'
     REGION_MAPPING = {}
 
-    def __init__(self, fpath: str):
+    def __init__(self, fpath: str, config_name: str = None):
         self.name = ''
         self.fpath = fpath
         self.asset = None
@@ -53,6 +59,52 @@ class EtfReader:
         self.values = []
         self.isin = ''
         self.fund_family = None
+        self.config_name = config_name
+        self.date_format = None
+        self.file_type = None
+        self.raw_data = None
+
+        if "xlsx" in self.fpath:
+            self.file_type = FileTypes.XLSX
+        else:
+            self.file_type = FileTypes.CSV
+
+    def init_from_config(self, config):
+        inc = 0
+        if "xlsx" in config["BASE"]["regex"]:
+            inc = 1
+
+        self.start_row = int(config["LINES"]["start_row"]) + inc
+        self.ticker_col = int(config["LINES"]["ticker_col"]) + inc
+        self.holding_name_col = int(config["LINES"]["name_col"]) + inc
+        self.weight_col = int(config["LINES"]["weight_col"]) + inc
+        self.region_col = int(config["LINES"]["region_col"]) + inc
+        self.date_row = int(config["DATE"]["row"]) + inc
+        self.date_col = int(config["DATE"]["col"]) + inc
+        self.covert_str = config["BASE"]["number_convert"]
+        self.location_code = config["BASE"]["location_code"]
+
+        if config.has_option("DATE", "format"):
+            self.date_format = config["DATE"]["format"]
+
+        if config.has_section("ETF_NAME"):
+            self.name_row = int(config["ETF_NAME"]["row"]) + inc
+            self.name_col = int(config["ETF_NAME"]["col"]) + inc
+        else:
+            self.name_row = self.name_col = None
+
+    def convert_str_to_float(self, nbr_str: str):
+        if self.covert_str == "COMMA":
+            nbr_str = nbr_str.replace(",", ".")
+        nbr_str = nbr_str.replace("%", "")
+        return float(nbr_str.strip())
+
+    def get_date(self):
+        cell_value = self.get_data(self.date_row, self.date_col)
+        if self.date_format:
+            cell_value = eval(f"'{cell_value}'{self.date_format}")
+        date_obj = self.parse_date(cell_value)
+        return date_obj
 
     def update_region(self, region: str, weight: float) -> None:
         if region not in self.asset.regions:
@@ -61,17 +113,43 @@ class EtfReader:
             self.asset.regions[region].weight += weight
             self.asset.regions[region].num_of_countries += 1
 
+    def open_file(self):
+        if self.file_type == FileTypes.XLSX:
+            self.read_sheet_from_wb()
+        else:
+            self.read_csv()
+
     def read_sheet_from_wb(self):
         try:
             wb = load_workbook(filename=self.fpath)
             self.sheet = wb.active
+            self.raw_data = wb.active
         except InvalidFileException as e:
             log.error(f"Could not read file: {self.fpath}")
+
+    def read_csv(self):
+        with open(self.fpath, newline='', encoding="utf-8-sig") as csvfile:
+            self.raw_data = list(csv.reader(csvfile, delimiter=',', quotechar='"'))
+
+    def get_row_count(self):
+        if self.file_type == FileTypes.XLSX:
+            return self.raw_data.max_row
+        else:
+            return len(self.raw_data)
+
+    def get_data(self, row: int, col: int):
+        try:
+            if self.file_type == FileTypes.XLSX:
+                return self.raw_data.cell(row, col).value
+            else:
+                return self.raw_data[row][col]
+        except IndexError:
+            return None
 
     def parse_date(self, last_update: str, date_formats: list[str] = None) -> datetime:
         try:
             date_obj = dateparser.parse(last_update, date_formats=date_formats)
-            return date_obj
+            return date_obj if date_obj else datetime.now()
         except ValueError:
             return datetime.now()
 
