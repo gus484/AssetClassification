@@ -15,11 +15,11 @@ log = logging.getLogger("ac")
 class EtfReaderFactory:
     READERS = {
         FundFamily.ISHARES: ISharesEtfReader,
-        # FundFamily.LGIM: (LGIMEtfReader.REGEX, LGIMEtfReader),
-        # FundFamily.SPDR: (SpdrEtfReader.REGEX, SpdrEtfReader),
-        # FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
+        # FundFamily.LGIM: LGIMEtfReader,
+        # FundFamily.SPDR: SpdrEtfReader,
+        # FundFamily.VANECK: VanEckEtfReader,
         FundFamily.VANGUARD: VanguardEtfReader,
-        # FundFamily.XTRACKERS: (XtrackersEtfReader.REGEX, XtrackersEtfReader)
+        # FundFamily.XTRACKERS: XtrackersEtfReader
     }
 
     @staticmethod
