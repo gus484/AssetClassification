@@ -42,8 +42,12 @@ class App:
         self.cb_mapping = None
 
         self.img_add = None
+        self.img_error = None
         self.img_folder = None
+        self.img_info = None
         self.img_remove = None
+        self.img_warning = None
+        self.images = {}
 
         self.lb_isin_filter = None
         self.lb_language = None
@@ -129,17 +133,9 @@ class App:
         self.w = ThemedTk(theme="arc")
         self.w.title(f"AssetAllocation (Ver. {self.version})")
         self.create_menu_bar()
+        self.w.geometry("770x430")
 
-        self.app_path = os.getcwd()
-        img_path = os.path.join(self.app_path, "images")
-
-        self.img_folder = PhotoImage(file=os.path.join(img_path, "folder.png"))
-        self.img_remove = PhotoImage(file=os.path.join(img_path, "remove.png"))
-        self.img_add = PhotoImage(file=os.path.join(img_path, "add.png"))
-        if os.name == 'nt':
-            self.w.iconbitmap(os.path.join(img_path, "pie.ico"))
-        else:
-            self.w.iconphoto(False, PhotoImage(file=os.path.join(img_path, "pie.png")))
+        self.load_images()
 
         fm = Frame(master=self.w, pady=5)
 
@@ -173,6 +169,28 @@ class App:
 
         self.set_config()
         self.w.mainloop()
+
+    def load_images(self):
+        self.app_path = os.getcwd()
+        img_path = os.path.join(self.app_path, "images")
+
+        self.img_folder = PhotoImage(file=os.path.join(img_path, "folder.png"))
+        self.img_remove = PhotoImage(file=os.path.join(img_path, "remove.png"))
+        self.img_add = PhotoImage(file=os.path.join(img_path, "add.png"))
+        self.img_error = PhotoImage(file=os.path.join(img_path, "error.png"))
+        self.img_info = PhotoImage(file=os.path.join(img_path, "info.png"))
+        self.img_warning = PhotoImage(file=os.path.join(img_path, "warning.png"))
+
+        self.images = {
+            'ERROR': self.img_error,
+            'INFO': self.img_info,
+            'WARNING': self.img_warning
+        }
+
+        if os.name == 'nt':
+            self.w.iconbitmap(os.path.join(img_path, "pie.ico"))
+        else:
+            self.w.iconphoto(False, PhotoImage(file=os.path.join(img_path, "pie.png")))
 
     def show_about(self):
         dlg_about = DlgAbout(self.version, AssetAllocation.VERSION)
@@ -214,17 +232,21 @@ class App:
         self.lb_log = ttk.Label(f, text="Logs")
         self.lb_log.pack(side=TOP)
 
-        columns = ('type', 'message')
-        self.tv_log = ttk.Treeview(f, selectmode='none', columns=columns, show='headings', height=7)
-        self.tv_log.column("type", anchor=CENTER, stretch=NO, width=80)
-        self.tv_log.column("message", anchor=W, stretch=YES)
-        self.tv_log.heading('type', text='Type')
-        self.tv_log.heading('message', text='Message')
+        columns = ("message")
+        self.tv_log = ttk.Treeview(f, selectmode='none', columns=columns, height=7)
 
-        # Constructing vertical scrollbar
-        vsb = ttk.Scrollbar(f, orient="vertical", command=self.tv_log.yview)
-        vsb.pack(side='right', fill='y')
-        self.tv_log.configure(yscrollcommand=vsb.set)
+        self.tv_log.heading("#0", text="")
+        self.tv_log.heading("message", text='Message', anchor=W)
+
+        self.tv_log.column('#0', anchor=CENTER, stretch=False, width=50)
+        self.tv_log.column("message", anchor=W, stretch=False, width=520)
+
+        vertical_sb = ttk.Scrollbar(f, orient="vertical", command=self.tv_log.yview)
+        horizontal_sb = ttk.Scrollbar(f, orient="horizontal", command=self.tv_log.xview)
+        vertical_sb.pack(side=RIGHT, fill='y')
+        horizontal_sb.pack(side=BOTTOM, fill='x')
+
+        self.tv_log.configure(xscrollcommand=horizontal_sb.set, yscrollcommand=vertical_sb.set)
         self.tv_log.pack()
         f.pack(fill='y')
 
@@ -405,6 +427,9 @@ class App:
         writes messages from the queue to the text widget as long the script thread runs
         """
         run = True
+        self.tv_log.tag_configure('ERROR', foreground='red', font=('arial', 10))
+        self.tv_log.tag_configure('INFO', foreground='#666666', font=('arial', 10))
+        self.tv_log.tag_configure('WARNING', foreground='brown', font=('arial', 10))
         while run:
             time.sleep(0.1)
 
@@ -412,7 +437,7 @@ class App:
                 ele = self.log_queue.get()
                 msg_type, message = self.format_log_message(ele.getMessage())
                 self.update_progress(message)
-                self.tv_log.insert('', 'end', values=(msg_type, message))
+                self.tv_log.insert('', 'end', values=(message, ''), image=self.images[msg_type], tag=msg_type)
 
             if not self.script_thread.is_alive():
                 run = False
