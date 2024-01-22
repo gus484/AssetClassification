@@ -12,29 +12,14 @@ class ISharesEtfReader(EtfReader):
 
     def __init__(self, fpath: str, config_name: str = None):
         super().__init__(fpath, config_name)
-        self.fund_family = FundFamily.ISHARES.value
-
-    def find_config(self) -> bool:
-        if self.config_name:
-            return True
-
-        for cfg_name, config in ISharesEtfReader.CONFIGS.items():
-            line = int(config["SUB_DETECTION"]["row"])
-            col = int(config["SUB_DETECTION"]["col"])
-            val = config["SUB_DETECTION"]["value"]
-
-            if val == self.get_data(line, col):
-                log.debug(f"... => {cfg_name}")
-                self.config_name = cfg_name
-                return True
-        return False
+        self.fund_family = FundFamily.ISHARES
 
     def read_asset(self):
         self.open_file()
         if not self.find_config():
             return
 
-        self.init_from_config(ISharesEtfReader.CONFIGS[self.config_name])
+        self.init_from_config()
 
         file_name = os.path.basename(os.path.normpath(self.fpath))
         date_obj = self.get_date()

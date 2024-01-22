@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from reader.etf_reader import FundFamily, EtfReader
+from reader.etf_reader_configs import EtfReaderConfigs
 from reader.ishares_etf_reader import ISharesEtfReader
 from reader.vanguard_etf_reader import VanguardEtfReader
 
@@ -22,14 +23,16 @@ class EtfReaderFactory:
         # FundFamily.XTRACKERS: XtrackersEtfReader
     }
 
+    READERS_CONFIGS = {}
+
     @staticmethod
     def get_reader(fpath) -> EtfReader:
         reader = None
         file_name = Path(fpath).name
 
         for fund_family, reader_class in EtfReaderFactory.READERS.items():
-            config, config_name = EtfReaderFactory.check_reader(reader_class, file_name)
-            # TODO check all configs
+            config, config_name = EtfReaderFactory.check_reader(fund_family, file_name)
+
             if config is not None:
                 log.debug(f"{fund_family} => {file_name}")
                 reader = reader_class(fpath, config_name)
@@ -41,8 +44,10 @@ class EtfReaderFactory:
         return reader
 
     @staticmethod
-    def check_reader(reader, file_name):
-        for name, config in reader.CONFIGS.items():
+    def check_reader(family, file_name):
+        readers = EtfReaderConfigs.get_family_configs(family)
+
+        for name, config in readers.items():
             regex = config['BASE']['regex']
             if re.search(regex, file_name) is None:
                 continue
@@ -54,7 +59,7 @@ class EtfReaderFactory:
         return None, None
 
     @staticmethod
-    def read_config(family: FundFamily, reader: EtfReader):
+    def read_config(family: FundFamily):
         search_word = f"{family.value.lower()}.ini"
         file_list = glob.glob(os.path.join("reader", "configs") + '/*')
         for file_path in file_list:
@@ -63,12 +68,13 @@ class EtfReaderFactory:
 
             config = configparser.ConfigParser()
             config.read(file_path)
-            reader.CONFIGS[os.path.basename(file_path)] = config
+
+            EtfReaderConfigs.add_config(family, os.path.basename(file_path), config)
 
     @staticmethod
     def init_readers():
         for family, reader_class in EtfReaderFactory.READERS.items():
-            EtfReaderFactory.read_config(family, reader_class)
+            EtfReaderFactory.read_config(family)
 
     @staticmethod
     def read_etfs_from_path(path, isin_filter):

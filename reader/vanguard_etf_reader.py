@@ -7,10 +7,10 @@ class VanguardEtfReader(EtfReader):
 
     def __init__(self, fpath: str, config_name: str = None):
         super().__init__(fpath, config_name)
-        self.fund_family = FundFamily.VANGUARD.value
+        self.fund_family = FundFamily.VANGUARD
 
     def read_asset(self):
-        self.init_from_config(VanguardEtfReader.CONFIGS[self.config_name])
+        self.init_from_config()
         self.open_file()
 
         if self.name_row:

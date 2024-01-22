@@ -13,6 +13,7 @@ import dateparser
 from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
+from reader.etf_reader_configs import EtfReaderConfigs
 from report.region import Region
 
 try:
@@ -52,7 +53,7 @@ class EtfReader:
     REGION_MAPPING = {}
 
     def __init__(self, fpath: str, config_name: str = None):
-        self.name = ''
+        self.name = EtfReader.NOT_EXIST
         self.fpath = fpath
         self.asset = None
         self.sheet = None
@@ -69,7 +70,10 @@ class EtfReader:
         else:
             self.file_type = FileTypes.CSV
 
-    def init_from_config(self, config):
+    def init_from_config(self):
+        self.find_config()
+        config = EtfReaderConfigs.get_config(self.fund_family, self.config_name)
+
         inc = 0
         if "xlsx" in config["BASE"]["regex"]:
             inc = 1
@@ -92,6 +96,21 @@ class EtfReader:
             self.name_col = int(config["ETF_NAME"]["col"]) + inc
         else:
             self.name_row = self.name_col = None
+
+    def find_config(self) -> bool:
+        if self.config_name:
+            return True
+
+        for cfg_name, config in EtfReaderConfigs.get_family_configs(self.fund_family).items():
+            line = int(config["SUB_DETECTION"]["row"])
+            col = int(config["SUB_DETECTION"]["col"])
+            val = config["SUB_DETECTION"]["value"]
+
+            if val == self.get_data(line, col):
+                log.debug(f"... => {cfg_name}")
+                self.config_name = cfg_name
+                return True
+        return False
 
     def convert_str_to_float(self, nbr_str: str):
         if self.covert_str == "COMMA":
