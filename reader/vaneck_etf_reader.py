@@ -1,31 +1,23 @@
 import os
-from locale import atof
 
 from reader.asset import Asset, Value
 from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class VanEckEtfReader(EtfReader):
-    REGEX = r'[A-Z]{4}\_(\w+)\_(\d{8})\.(xlsx)'
 
-    def __init__(self, fpath):
-        super().__init__(fpath)
-        self.fund_family = FundFamily.VANECK.value
-        self.last_update = ''
-        self.start_row = 4
-        self.name_col = 2
-        self.ticker_col = 3
-        self.region_col = 4
-        self.weight_col = 7
+    def __init__(self, fpath, config_name: str = None):
+        super().__init__(fpath, config_name)
+        self.fund_family = FundFamily.VANECK
         self.file_name = os.path.basename(self.fpath)
-        self.read_sheet_from_wb()
 
     def read_asset(self):
-        self.file_name = self.file_name.split("_")[0]
-        last_update = self.sheet.cell(1, 1).value
-        last_update = last_update.split(" ")[3]
+        self.init_from_config()
+        self.open_file()
 
-        date_obj = self.parse_date(last_update)
+        self.file_name = self.file_name.split("_")[0]
+
+        date_obj = self.get_date()
         last_update = date_obj.strftime('%d.%m.%Y')
 
         self.isin = EtfReader.get_isin_from_file_name(self.fund_family, self.file_name)
@@ -33,16 +25,18 @@ class VanEckEtfReader(EtfReader):
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
 
     def read_sheet(self):
-        for i in range(self.start_row, self.sheet.max_row):
-            name = self.sheet.cell(i, self.name_col).value
+        for i in range(self.start_row, self.get_row_count()):
+            name = self.get_data(i, self.holding_name_col)
             if name is None:
                 break
-            weight = self.sheet.cell(i, self.weight_col).value
-            weight = atof(weight.replace("%", "").replace("\xa0", ""))
-            ticker = self.sheet.cell(i, self.ticker_col).value
-            region = self.sheet.cell(i, self.region_col).value
+
+            weight = self.get_data(i, self.weight_col)
+            weight = self.convert_str_to_float(weight)
+            ticker = self.get_data(i, self.ticker_col)
+            region = self.get_data(i, self.region_col)
+
             region = region[:2]
-            region = EtfReader.get_region_code(LocationCodes.ALPHA_2_CODE, region)
+            region = EtfReader.get_region_code(LocationCodes[self.location_code], region)
             a = Value(name, weight, weight, ticker, region)
 
             self.update_region(region, weight)

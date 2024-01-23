@@ -178,7 +178,7 @@ class EtfReader:
             path_to_mapping = Path(__file__).parent
             path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", "lookups", "isin_lookup.json")
             EtfReader.ISIN_LOOKUP = EtfReader.read_json(path_to_mapping)
-        return EtfReader.ISIN_LOOKUP.get(fund_family, {}).get(name, EtfReader.NOT_EXIST)
+        return EtfReader.ISIN_LOOKUP.get(fund_family.value, {}).get(name, EtfReader.NOT_EXIST)
 
     @staticmethod
     def get_name_from_isin(fund_family, isin) -> str:
@@ -186,7 +186,7 @@ class EtfReader:
             path_to_mapping = Path(__file__).parent
             path_to_mapping = os.path.join(path_to_mapping, "../", "mappings", "lookups", "isin_to_name_lookup.json")
             EtfReader.ISIN_TO_NAME_LOOKUP = EtfReader.read_json(path_to_mapping)
-        return EtfReader.ISIN_TO_NAME_LOOKUP.get(fund_family, {}).get(isin, EtfReader.NOT_EXIST)
+        return EtfReader.ISIN_TO_NAME_LOOKUP.get(fund_family.value, {}).get(isin, EtfReader.NOT_EXIST)
 
     @staticmethod
     def get_isin_and_names():
