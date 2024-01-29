@@ -59,9 +59,12 @@ class EtfReader:
         self.sheet = None
         self.values = []
         self.isin = ''
+        self.isin_src = None
         self.fund_family = None
         self.config_name = config_name
         self.date_format = None
+        self.date_frm = None
+        self.date_src = None
         self.file_type = None
         self.raw_data = None
 
@@ -83,19 +86,34 @@ class EtfReader:
         self.holding_name_col = int(config["LINES"]["name_col"]) + inc
         self.weight_col = int(config["LINES"]["weight_col"]) + inc
         self.region_col = int(config["LINES"]["region_col"]) + inc
-        self.date_row = int(config["DATE"]["row"]) + inc
-        self.date_col = int(config["DATE"]["col"]) + inc
+
+        if config.has_option("DATE", "src"):
+            self.date_src = config.get("DATE", "src")
+        else:
+            self.date_row = int(config["DATE"]["row"]) + inc
+            self.date_col = int(config["DATE"]["col"]) + inc
+
         self.covert_str = config["BASE"]["number_convert"]
         self.location_code = config["BASE"]["location_code"]
 
         if config.has_option("DATE", "format"):
             self.date_format = config["DATE"]["format"]
+        if config.has_option("DATE", "frm"):
+            self.date_frm = config.get("DATE", "frm", raw=True)
 
         if config.has_section("ETF_NAME"):
             self.name_row = int(config["ETF_NAME"]["row"]) + inc
             self.name_col = int(config["ETF_NAME"]["col"]) + inc
         else:
             self.name_row = self.name_col = None
+
+        if config.has_option("ETF_ISIN", "row"):
+            self.isin_row = int(config["ETF_ISIN"]["row"]) + inc
+            self.isin_col = int(config["ETF_ISIN"]["col"]) + inc
+        elif config.has_option("ETF_ISIN", "src"):
+            self.isin_src = config.get("ETF_ISIN", "src")
+        else:
+            self.isin_row = self.isin_col = None
 
     def find_config(self) -> bool:
         if self.config_name:
@@ -118,10 +136,24 @@ class EtfReader:
         nbr_str = nbr_str.replace("%", "")
         return float(nbr_str.strip())
 
+    def get_isin(self):
+        if self.isin_src:
+            if self.isin_src == "FILE_NAME":
+                return os.path.basename(self.fpath)
+        return self.get_data(self.isin_row, self.isin_col)
+
     def get_date(self):
-        cell_value = self.get_data(self.date_row, self.date_col)
+        if not self.date_src:
+            cell_value = self.get_data(self.date_row, self.date_col)
+        elif self.date_src == "SHEET_TITLE":
+            cell_value = self.sheet.title
+
         if self.date_format:
             cell_value = eval(f"'{cell_value}'{self.date_format}")
+
+        if self.date_frm:
+            return datetime.strptime(cell_value, self.date_frm)
+
         date_obj = self.parse_date(cell_value)
         return date_obj
 

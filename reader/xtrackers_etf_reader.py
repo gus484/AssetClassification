@@ -1,44 +1,44 @@
 import os
-import re
 
 from reader.asset import Asset, Value
 from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class XtrackersEtfReader(EtfReader):
-    REGEX = r'(Constituent)\_([A-Za-z0-9]+)\.(xlsx)'
 
-    def __init__(self, fpath: str):
-        super().__init__(fpath)
-        self.fund_family = FundFamily.XTRACKERS.value
-        self.start_row = 5
-        self.ticker_col = 1
-        self.name_col = 2
-        self.weight_col = 11
-        self.region_col = 3
-        self.read_sheet_from_wb()
+    def __init__(self, fpath: str, config_name: str = None):
+        super().__init__(fpath, config_name)
+        self.fund_family = FundFamily.XTRACKERS
 
     def read_asset(self):
+        self.open_file()
+        self.init_from_config()
+
         name = os.path.basename(self.fpath)
-        last_update = self.parse_date(self.sheet.title)
+        last_update = self.get_date()
         last_update = last_update.strftime('%d.%m.%Y')
 
-        x = re.search(self.REGEX, name)
-        if x is not None:
-            self.isin = x[2]
+        self.isin = self.get_isin()
+        self.isin = self.isin.split("_")[1]
+        # x = re.search(self.REGEX, name)
+        # if x is not None:
+        #    self.isin = x[2]
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
 
     def read_sheet(self):
-        for i in range(self.start_row, self.sheet.max_row):
-            name = self.sheet.cell(i, self.name_col).value
+        for i in range(self.start_row, self.get_row_count()):
+            name = self.get_data(i, self.holding_name_col)
             if name is None:
                 break
-            weight = self.sheet.cell(i, self.weight_col).value * 100.0
-            ticker = self.sheet.cell(i, self.ticker_col).value
-            region = self.sheet.cell(i, self.region_col).value
-            region = EtfReader.get_region_code(LocationCodes.ALPHA_2_CODE, region[:2])
+            weight = self.get_data(i, self.weight_col)
+
+            if not type(weight) is float:
+                continue
+
+            ticker = self.get_data(i, self.ticker_col)
+            region = self.get_data(i, self.region_col)
+            region = EtfReader.get_region_code(LocationCodes[self.location_code], region)
             a = Value(name, weight, weight, ticker, region)
 
             self.update_region(region, weight)
-
             self.asset.values.append(a)

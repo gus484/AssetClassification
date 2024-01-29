@@ -8,9 +8,11 @@ from pathlib import Path
 from reader.etf_reader import FundFamily, EtfReader
 from reader.etf_reader_configs import EtfReaderConfigs
 from reader.ishares_etf_reader import ISharesEtfReader
+from reader.lgim_etf_reader import LGIMEtfReader
 from reader.spdr_etf_reader import SpdrEtfReader
 from reader.vaneck_etf_reader import VanEckEtfReader
 from reader.vanguard_etf_reader import VanguardEtfReader
+from reader.xtrackers_etf_reader import XtrackersEtfReader
 
 log = logging.getLogger("ac")
 
@@ -18,11 +20,11 @@ log = logging.getLogger("ac")
 class EtfReaderFactory:
     READERS = {
         FundFamily.ISHARES: ISharesEtfReader,
-        # FundFamily.LGIM: LGIMEtfReader,
+        FundFamily.LGIM: LGIMEtfReader,
         FundFamily.SPDR: SpdrEtfReader,
         FundFamily.VANECK: VanEckEtfReader,
         FundFamily.VANGUARD: VanguardEtfReader,
-        # FundFamily.XTRACKERS: XtrackersEtfReader
+        FundFamily.XTRACKERS: XtrackersEtfReader
     }
 
     READERS_CONFIGS = {}
