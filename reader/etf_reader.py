@@ -63,7 +63,7 @@ class EtfReader:
         self.fund_family = None
         self.config_name = config_name
         self.date_format = None
-        self.date_frm = None
+        self.date_parse = None
         self.date_src = None
         self.file_type = None
         self.raw_data = None
@@ -98,8 +98,8 @@ class EtfReader:
 
         if config.has_option("DATE", "format"):
             self.date_format = config["DATE"]["format"]
-        if config.has_option("DATE", "frm"):
-            self.date_frm = config.get("DATE", "frm", raw=True)
+        if config.has_option("DATE", "parse"):
+            self.date_parse = config.get("DATE", "parse", raw=True)
 
         if config.has_section("ETF_NAME"):
             self.name_row = int(config["ETF_NAME"]["row"]) + inc
@@ -151,8 +151,8 @@ class EtfReader:
         if self.date_format:
             cell_value = eval(f"'{cell_value}'{self.date_format}")
 
-        if self.date_frm:
-            return datetime.strptime(cell_value, self.date_frm)
+        if self.date_parse:
+            return datetime.strptime(cell_value, self.date_parse)
 
         date_obj = self.parse_date(cell_value)
         return date_obj
@@ -265,7 +265,7 @@ class EtfReader:
 
     def set_default_name(self):
         EtfReader.NAME_COUNTER += 1
-        self.name = f'{self.fund_family}ETF{EtfReader.NAME_COUNTER:02d}'
+        self.name = f'{self.fund_family.value} ETF{EtfReader.NAME_COUNTER:02d}'
         self.asset.name = self.name
 
     @abc.abstractmethod

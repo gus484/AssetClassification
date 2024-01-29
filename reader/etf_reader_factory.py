@@ -63,9 +63,14 @@ class EtfReaderFactory:
         return None, None
 
     @staticmethod
-    def read_config(family: FundFamily):
+    def read_config(family: FundFamily, config_path):
+        if config_path:
+            config_path = os.path.join(config_path, "reader", "configs")
+        else:
+            config_path = os.path.join("reader", "configs")
+
         search_word = f"{family.value.lower()}.ini"
-        file_list = glob.glob(os.path.join("reader", "configs") + '/*')
+        file_list = glob.glob(config_path + '/*')
         for file_path in file_list:
             if not file_path.endswith(search_word):
                 continue
@@ -76,9 +81,12 @@ class EtfReaderFactory:
             EtfReaderConfigs.add_config(family, os.path.basename(file_path), config)
 
     @staticmethod
-    def init_readers():
+    def init_readers(config_path: str = None):
+        if len(EtfReaderFactory.READERS_CONFIGS) > 0:
+            return
+
         for family, reader_class in EtfReaderFactory.READERS.items():
-            EtfReaderFactory.read_config(family)
+            EtfReaderFactory.read_config(family, config_path)
 
     @staticmethod
     def read_etfs_from_path(path, isin_filter):
