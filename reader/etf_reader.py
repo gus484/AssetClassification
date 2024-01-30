@@ -54,12 +54,14 @@ class EtfReader:
 
     def __init__(self, fpath: str, config_name: str = None):
         self.name = EtfReader.NOT_EXIST
+        self.name_row = None
         self.fpath = fpath
         self.asset = None
         self.sheet = None
         self.values = []
         self.isin = ''
         self.isin_src = None
+        self.isin_row = None
         self.fund_family = None
         self.config_name = config_name
         self.date_format = None
@@ -151,7 +153,10 @@ class EtfReader:
         if self.isin_src:
             if self.isin_src == "FILE_NAME":
                 return os.path.basename(self.fpath)
-        return self.get_data(self.isin_row, self.isin_col)
+        if self.isin_row:
+            return self.get_data(self.isin_row, self.isin_col)
+
+        return self.set_default_isin()
 
     def get_date(self):
         if not self.date_src:
@@ -272,13 +277,12 @@ class EtfReader:
     def set_default_isin(self):
         EtfReader.ISIN_COUNTER += 1
         self.isin = f'XX{EtfReader.ISIN_COUNTER:09d}0'
-        self.asset.isin = self.isin
+        return self.isin
 
     def set_default_name(self):
         EtfReader.NAME_COUNTER += 1
         self.name = f'{self.fund_family.value} ETF{EtfReader.NAME_COUNTER:02d}'
         return self.name
-        # self.asset.name = self.name
 
     @abc.abstractmethod
     def read_sheet(self):

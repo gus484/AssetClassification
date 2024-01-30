@@ -35,6 +35,17 @@ class TestEtfReader(TestCase):
         name_not_exist = reader.get_name_from_isin(FundFamily.ISHARES, "ABC")
         self.assertEqual(EtfReader.NOT_EXIST, name_not_exist)
 
+    def test_get_default_isin(self):
+        reader = EtfReader(r"not\existing")
+        isin = reader.get_isin()
+        self.assertEqual("XX0000000010", isin)
+
+    def test_get_default_name(self):
+        reader = EtfReader(r"not\existing")
+        reader.fund_family = FundFamily.ISHARES
+        name = reader.get_name()
+        self.assertEqual("ISHARES ETF01", name)
+
     def test_read_json(self):
         reader = EtfReader(r"not\existing")
         json = reader.read_json(r"not\existing")
