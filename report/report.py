@@ -33,7 +33,7 @@ class Report:
             self.doc.write_toc(toc)
 
     def create_main_menu(self):
-        self.doc.write_link_bar([(T.get_name('companys'), 'holdings.html'),
+        self.doc.write_link_bar([(T.get_name('companies'), 'holdings.html'),
                                  (T.get_name('cluster_risk'), 'cluster.html'),
                                  (T.get_name('regions'), 'regions.html')], self.page)
 
