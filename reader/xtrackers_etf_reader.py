@@ -1,5 +1,3 @@
-import os
-
 from reader.asset import Asset, Value
 from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
@@ -14,12 +12,12 @@ class XtrackersEtfReader(EtfReader):
         self.open_file()
         self.init_from_config()
 
-        name = os.path.basename(self.fpath)
+        name = self.get_name()
         last_update = self.get_date()
         last_update = last_update.strftime('%d.%m.%Y')
 
         self.isin = self.get_isin()
-        self.isin = self.isin.split("_")[1]
+        self.isin = (self.isin.split("_")[1]).split(".")[0]
 
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
 

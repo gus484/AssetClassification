@@ -34,10 +34,7 @@ class ISharesEtfReader(EtfReader):
                     break'''
 
         self.isin = EtfReader.get_isin_from_file_name(self.fund_family, file_name)
-        if self.name_row:
-            name = self.get_data(self.name_row, self.name_col)
-        else:
-            name = EtfReader.get_name_from_isin(self.fund_family, self.isin)
+        name = self.get_name()
 
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
 

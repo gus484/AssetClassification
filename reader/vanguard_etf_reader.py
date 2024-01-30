@@ -13,10 +13,7 @@ class VanguardEtfReader(EtfReader):
         self.init_from_config()
         self.open_file()
 
-        if self.name_row:
-            name = self.get_data(self.name_row, self.name_col)
-        else:
-            name = ''
+        name = self.get_name()
 
         date_obj = self.get_date()
         last_update = date_obj.strftime('%d.%m.%Y')

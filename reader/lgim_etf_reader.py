@@ -12,7 +12,7 @@ class LGIMEtfReader(EtfReader):
         self.open_file()
         self.init_from_config()
 
-        name = self.get_data(self.name_row, self.name_col)
+        name = self.get_name()
 
         self.isin = self.get_isin()
         date_obj = self.get_date()

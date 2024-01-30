@@ -136,6 +136,17 @@ class EtfReader:
         nbr_str = nbr_str.replace("%", "")
         return float(nbr_str.strip())
 
+    def get_name(self):
+        if self.name_row:
+            return self.get_data(self.name_row, self.name_col)
+
+        name = self.get_name_from_isin(self.fund_family, self.isin)
+
+        if name != EtfReader.NOT_EXIST:
+            return name
+
+        return self.set_default_name()
+
     def get_isin(self):
         if self.isin_src:
             if self.isin_src == "FILE_NAME":
@@ -266,7 +277,8 @@ class EtfReader:
     def set_default_name(self):
         EtfReader.NAME_COUNTER += 1
         self.name = f'{self.fund_family.value} ETF{EtfReader.NAME_COUNTER:02d}'
-        self.asset.name = self.name
+        return self.name
+        # self.asset.name = self.name
 
     @abc.abstractmethod
     def read_sheet(self):
