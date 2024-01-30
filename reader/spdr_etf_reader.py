@@ -12,7 +12,7 @@ class SpdrEtfReader(EtfReader):
         self.open_file()
 
         name = self.get_data(self.name_row, self.name_col)
-        self.isin = self.get_data(2, 2)
+        self.isin = self.get_isin()
 
         date_obj = self.get_date()
         last_update = date_obj.strftime('%d.%m.%Y')

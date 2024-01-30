@@ -20,9 +20,7 @@ class XtrackersEtfReader(EtfReader):
 
         self.isin = self.get_isin()
         self.isin = self.isin.split("_")[1]
-        # x = re.search(self.REGEX, name)
-        # if x is not None:
-        #    self.isin = x[2]
+
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
 
     def read_sheet(self):

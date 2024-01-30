@@ -42,18 +42,17 @@ class ISharesEtfReader(EtfReader):
         self.asset = Asset(name, self.isin, 0.0, last_update, [])
 
     def read_sheet(self):
-        for line_nbr in range(self.start_row, self.get_row_count()):
-            line = self.raw_data[line_nbr]
+        for i in range(self.start_row, self.get_row_count()):
+            name = self.get_data(i, self.holding_name_col)
 
-            if self.weight_col >= len(line):
+            if name is None:
                 break
 
-            ticker = line[self.ticker_col]
-            name = line[self.holding_name_col]
-            weight = self.convert_str_to_float(line[self.weight_col])
-            region = line[self.region_col]
+            ticker = self.get_data(i, self.ticker_col)
+            weight = self.convert_str_to_float(self.get_data(i, self.weight_col))
+            region = self.get_data(i, self.region_col)
             region = EtfReader.get_region_code(LocationCodes[self.location_code], region)
-            a = Value(name, weight, weight, ticker, region)
 
-            self.update_region(region, weight)
+            a = Value(name, weight, weight, ticker, region)
             self.asset.values.append(a)
+            self.update_region(region, weight)
