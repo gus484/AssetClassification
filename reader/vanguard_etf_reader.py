@@ -3,15 +3,13 @@ from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class VanguardEtfReader(EtfReader):
-    CONFIGS = {}
 
     def __init__(self, fpath: str, config_name: str = None):
         super().__init__(fpath, config_name)
         self.fund_family = FundFamily.VANGUARD
 
     def read_asset(self):
-        self.init_from_config()
-        self.open_file()
+        super().read_asset()
 
         name = self.get_name()
 

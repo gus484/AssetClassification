@@ -9,8 +9,7 @@ class LGIMEtfReader(EtfReader):
         self.fund_family = FundFamily.LGIM
 
     def read_asset(self):
-        self.open_file()
-        self.init_from_config()
+        super().read_asset()
 
         name = self.get_name()
 

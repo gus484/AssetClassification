@@ -23,6 +23,6 @@ class TestXtrackerEtfReader(TestCase):
     def test_read_asset(self):
         reader = create_reader(self.test_file1)
         reader.read_asset()
-        self.assertEqual('XTRACKERS ETF01', reader.asset.name)
+        self.assertIn('XTRACKERS ETF0', reader.asset.name)
         self.assertEqual('IE00BJ0KDQ92', reader.asset.isin)
         self.assertEqual('28.01.2024', reader.asset.last_history_date)

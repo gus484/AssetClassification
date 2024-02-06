@@ -83,11 +83,11 @@ class EtfReader:
         if "xlsx" in config["BASE"]["regex"]:
             inc = 1
 
-        self.start_row = int(config["LINES"]["start_row"]) + inc
-        self.ticker_col = int(config["LINES"]["ticker_col"]) + inc
-        self.holding_name_col = int(config["LINES"]["name_col"]) + inc
-        self.weight_col = int(config["LINES"]["weight_col"]) + inc
-        self.region_col = int(config["LINES"]["region_col"]) + inc
+        self.start_row = int(config["HOLDINGS"]["start_row"]) + inc
+        self.ticker_col = int(config["HOLDINGS"]["ticker_col"]) + inc
+        self.holding_name_col = int(config["HOLDINGS"]["name_col"]) + inc
+        self.weight_col = int(config["HOLDINGS"]["weight_col"]) + inc
+        self.region_col = int(config["HOLDINGS"]["region_col"]) + inc
 
         if config.has_option("DATE", "src"):
             self.date_src = config.get("DATE", "src")
@@ -292,4 +292,10 @@ class EtfReader:
     @abc.abstractmethod
     def read_asset(self):
         """Method documentation"""
-        return
+        self.open_file()
+        if not self.find_config():
+            log.warning("No Config found")
+            return False
+
+        self.init_from_config()
+        return True

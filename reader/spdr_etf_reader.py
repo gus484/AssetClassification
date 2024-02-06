@@ -8,8 +8,7 @@ class SpdrEtfReader(EtfReader):
         self.fund_family = FundFamily.SPDR
 
     def read_asset(self):
-        self.init_from_config()
-        self.open_file()
+        super().read_asset()
 
         name = self.get_name()
         self.isin = self.get_isin()

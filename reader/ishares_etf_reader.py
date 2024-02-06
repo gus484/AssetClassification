@@ -8,18 +8,13 @@ log = logging.getLogger("ac")
 
 
 class ISharesEtfReader(EtfReader):
-    CONFIGS = {}
 
     def __init__(self, fpath: str, config_name: str = None):
         super().__init__(fpath, config_name)
         self.fund_family = FundFamily.ISHARES
 
     def read_asset(self):
-        self.open_file()
-        if not self.find_config():
-            return
-
-        self.init_from_config()
+        super().read_asset()
 
         file_name = os.path.basename(os.path.normpath(self.fpath))
         date_obj = self.get_date()

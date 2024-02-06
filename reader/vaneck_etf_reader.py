@@ -12,8 +12,7 @@ class VanEckEtfReader(EtfReader):
         self.file_name = os.path.basename(self.fpath)
 
     def read_asset(self):
-        self.init_from_config()
-        self.open_file()
+        super().read_asset()
 
         self.file_name = self.file_name.split("_")[0]
 

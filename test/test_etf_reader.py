@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 
 from reader.asset import Asset
@@ -45,6 +46,12 @@ class TestEtfReader(TestCase):
         reader.fund_family = FundFamily.ISHARES
         name = reader.get_name()
         self.assertEqual("ISHARES ETF01", name)
+
+    def test_wrong_config(self):
+        file = os.path.join(os.path.dirname(__file__), f'data/dummy_etf.csv')
+        print(file)
+        reader = EtfReader(file)
+        reader.read_asset()
 
     def test_read_json(self):
         reader = EtfReader(r"not\existing")
