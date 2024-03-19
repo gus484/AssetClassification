@@ -32,6 +32,7 @@ class XtrackersEtfReader(EtfReader):
 
             ticker = self.get_data(i, self.ticker_col)
             region = self.get_data(i, self.region_col)
+            region = region[:2]
             region = EtfReader.get_region_code(LocationCodes[self.location_code], region)
             a = Value(name, weight, weight, ticker, region)
 

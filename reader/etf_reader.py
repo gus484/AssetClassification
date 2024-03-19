@@ -178,7 +178,7 @@ class EtfReader:
             self.asset.regions[region] = Region(region, weight, 1)
         else:
             self.asset.regions[region].weight += weight
-            self.asset.regions[region].num_of_countries += 1
+            self.asset.regions[region].num_of_holdings += 1
 
     def open_file(self):
         if self.file_type == FileTypes.XLSX:

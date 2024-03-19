@@ -101,4 +101,4 @@ class Gpo:
 class Region:
     short: str
     weight: float
-    num_of_countries: int = 0
+    num_of_holdings: int = 0

@@ -97,7 +97,7 @@ class AssetAllocation:
         # report_regions
         rep = ReportFactory.get_reporter(Report.HTML_REGIONS, self.assets)
         rep.create()
-        self.pp_data = rep.get_gpo_data()
+        self.pp_data = rep.get_region_distribution()
 
         rep = AboutReport()
         rep.create(AssetAllocation.VERSION)
