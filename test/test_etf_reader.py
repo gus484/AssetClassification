@@ -1,7 +1,8 @@
+import os
 from unittest import TestCase
 
 from reader.asset import Asset
-from reader.etf_reader import EtfReader, FundFamily
+from reader.etf_reader import EtfReader, FundFamily, LocationCodes
 
 
 class TestEtfReader(TestCase):
@@ -21,19 +22,36 @@ class TestEtfReader(TestCase):
 
     def test_get_isin_from_file_name(self):
         reader = EtfReader(r"not\existing")
-        isin = reader.get_isin_from_file_name(FundFamily.ISHARES.value, "EIMU_holdings.csv")
+        isin = reader.get_isin_from_file_name(FundFamily.ISHARES, "EIMU_holdings.csv")
         self.assertEqual("IE00BD45KH83", isin)
 
-        isin_not_exist = reader.get_isin_from_file_name(FundFamily.ISHARES.value, "ABC.csv")
+        isin_not_exist = reader.get_isin_from_file_name(FundFamily.ISHARES, "ABC.csv")
         self.assertEqual(EtfReader.NOT_EXIST, isin_not_exist)
 
     def test_get_name_from_isin(self):
         reader = EtfReader(r"not\existing")
-        name = reader.get_name_from_isin(FundFamily.ISHARES.value, "IE00BD45KH83")
+        name = reader.get_name_from_isin(FundFamily.ISHARES, "IE00BD45KH83")
         self.assertEqual("iShares Core MSCI Emerging Markets IMI UCITS ETF", name)
 
-        name_not_exist = reader.get_name_from_isin(FundFamily.ISHARES.value, "ABC")
+        name_not_exist = reader.get_name_from_isin(FundFamily.ISHARES, "ABC")
         self.assertEqual(EtfReader.NOT_EXIST, name_not_exist)
+
+    def test_get_default_isin(self):
+        reader = EtfReader(r"not\existing")
+        isin = reader.get_isin()
+        self.assertEqual("XX0000000010", isin)
+
+    def test_get_default_name(self):
+        reader = EtfReader(r"not\existing")
+        reader.fund_family = FundFamily.ISHARES
+        name = reader.get_name()
+        self.assertEqual("ISHARES ETF01", name)
+
+    def test_wrong_config(self):
+        file = os.path.join(os.path.dirname(__file__), f'data/dummy_etf.csv')
+        print(file)
+        reader = EtfReader(file)
+        reader.read_asset()
 
     def test_read_json(self):
         reader = EtfReader(r"not\existing")
@@ -42,5 +60,9 @@ class TestEtfReader(TestCase):
 
     def test_get_region_code(self):
         reader = EtfReader(r"not\existing")
-        code = reader.get_region_code(FundFamily.ISHARES.value, "Spanien")
-        self.assertEqual("ESP", code)
+        code_de_full = reader.get_region_code(LocationCodes.DE_FULL_NAME, "Spanien")
+        code_en_full = reader.get_region_code(LocationCodes.EN_FULL_NAME, "Spain")
+        code_alpha_2 = reader.get_region_code(LocationCodes.ALPHA_2_CODE, "ES")
+        self.assertEqual("ESP", code_de_full)
+        self.assertEqual("ESP", code_en_full)
+        self.assertEqual("ESP", code_alpha_2)

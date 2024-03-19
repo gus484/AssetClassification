@@ -5,6 +5,7 @@ from reader.etf_reader_factory import EtfReaderFactory
 
 
 def create_reader(test_file_name) -> EtfReader:
+    EtfReaderFactory.init_readers("../")
     file = os.path.join(os.path.dirname(__file__), f'data/{test_file_name}')
     reader = EtfReaderFactory.get_reader(file)
     return reader

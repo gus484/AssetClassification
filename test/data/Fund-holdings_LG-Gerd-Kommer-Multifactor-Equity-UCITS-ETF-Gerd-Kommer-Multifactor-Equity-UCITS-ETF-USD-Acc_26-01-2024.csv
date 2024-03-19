@@ -1,0 +1,33 @@
+sep=,
+ETFS PCF,,,,,,,,,,,,,
+Fund Name,L&G Gerd Kommer Multifactor Equity UCITS ETF - USD Accumulating ETF,,,,,,,,,,,,
+ISIN,IE0001UQQ933,,,,,,,,,,,,
+Fund Data At Close,20240125,,,,,,,,,,,,
+Basket Size,"500,000",,,,,,,,,,,,
+Number Of Securities (Excluding Zero Weighted Securities),2879,,,,,,,,,,,,
+Fund CCY,USD,,,,,,,,,,,,
+NAV Per Share,10.8329,,,,,,,,,,,,
+NAV Type,,,,,,,,,,,,,
+AUM,"140,460,829.08",,,,,,,,,,,,
+Shares In Issue,"12,966,129",,,,,,,,,,,,
+Index Name,,,,,,,,,,,,,
+Index Level,,,,,,,,,,,,,
+Index Date,20240125,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+COMPONENTS,ISIN,SEDOL,CUSIP,RIC,Basket Shares,Local CCY,Local CCY Price,Local CCY Market Value,WM Rate,Fund CCY,Fund CCY Market Value,Weight,Dividend Amount in Pricing CCY
+Cash Component of 1 Creation Unit,,,,,,,,"15,140.04",,USD,"15,140.04",0.0028,
+AAR CORP,US0003611052,2001119,000361105,AIR.N,22,USD,57.70,"1,269.40",1,USD,"1,269.40",0.0002,0.0000
+AFLAC INC,US0010551028,2026361,001055102,AFL.N,33,USD,84.89,"2,801.37",1,USD,"2,801.37",0.0005,0.0000
+AGCO CORP.,US0010841023,2010278,001084102,AGCO.N,2,USD,123.87,247.74,1,USD,247.74,0.0000,0.0000
+AGNC INVESTMENT CORP,US00123Q1040,BYYHJL8,00123Q104,AGNC.OQ,74,USD,9.82,726.68,1,USD,726.68,0.0001,0.0000
+AMN HEALTHCARE SERVICES,US0017441017,2813552,001744101,AHS.N,6,USD,75.15,450.90,1,USD,450.90,0.0001,0.0000
+API GROUP CORP,US00187Y1001,BMBPH06,00187Y100,,54,USD,32.07,"1,731.78",1,USD,"1,731.78",0.0003,0.0000
+ASGN INC NPV,US00191U1025,BFY8W20,00191U102,ASGN.K,16,USD,94.91,"1,518.56",1,USD,"1,518.56",0.0003,0.0000
+RAIL VIKAS NIGAM LTD                                                                                ,INE415G01027,BJLJGN3,,,182,INR,301.95,"54,954.90",83.116255270939,USD,661.18,0.0001,0.0000
+,,,,,,,,,,,"5,416,450.00",1.0000,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+Disclaimer:,,,,,,,,,,,,,
+"The weightings and holdings of the ETF may differ from time to time. Legal & General UCITS ETF PLC funds receive the calculation of this  data from third parties. Neither the provider of this PCF nor Legal & General UCITS ETF PLC make any representation or  warranty, regardless of the formats in which the PCF is provided to you, as to the accuracy of the information and shall not be liable for any damages resulting from the use of such information or any error in its calculation.",,,,,,,,,,,,,

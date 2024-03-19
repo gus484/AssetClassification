@@ -1,9 +1,12 @@
+import configparser
 import glob
 import logging
+import os
 import re
 from pathlib import Path
 
 from reader.etf_reader import FundFamily, EtfReader
+from reader.etf_reader_configs import EtfReaderConfigs
 from reader.ishares_etf_reader import ISharesEtfReader
 from reader.lgim_etf_reader import LGIMEtfReader
 from reader.spdr_etf_reader import SpdrEtfReader
@@ -16,23 +19,27 @@ log = logging.getLogger("ac")
 
 class EtfReaderFactory:
     READERS = {
-        FundFamily.ISHARES: (ISharesEtfReader.REGEX, ISharesEtfReader),
-        FundFamily.LGIM: (LGIMEtfReader.REGEX, LGIMEtfReader),
-        FundFamily.SPDR: (SpdrEtfReader.REGEX, SpdrEtfReader),
-        FundFamily.VANECK: (VanEckEtfReader.REGEX, VanEckEtfReader),
-        FundFamily.VANGUARD: (VanguardEtfReader.REGEX, VanguardEtfReader),
-        FundFamily.XTRACKERS: (XtrackersEtfReader.REGEX, XtrackersEtfReader)
+        FundFamily.ISHARES: ISharesEtfReader,
+        FundFamily.LGIM: LGIMEtfReader,
+        FundFamily.SPDR: SpdrEtfReader,
+        FundFamily.VANECK: VanEckEtfReader,
+        FundFamily.VANGUARD: VanguardEtfReader,
+        FundFamily.XTRACKERS: XtrackersEtfReader
     }
+
+    READERS_CONFIGS = {}
 
     @staticmethod
     def get_reader(fpath) -> EtfReader:
         reader = None
         file_name = Path(fpath).name
 
-        for k, v in EtfReaderFactory.READERS.items():
-            if re.search(v[0], file_name) is not None:
-                log.debug(f"{k} => {file_name}")
-                reader = v[1](fpath)
+        for fund_family, reader_class in EtfReaderFactory.READERS.items():
+            config, config_name = EtfReaderFactory.check_reader(fund_family, file_name)
+
+            if config is not None:
+                log.debug(f"{fund_family} => {file_name}")
+                reader = reader_class(fpath, config_name)
                 break
 
         if reader is None:
@@ -41,8 +48,51 @@ class EtfReaderFactory:
         return reader
 
     @staticmethod
+    def check_reader(family, file_name):
+        readers = EtfReaderConfigs.get_family_configs(family)
+
+        for name, config in readers.items():
+            regex = config['BASE']['regex']
+            if re.search(regex, file_name) is None:
+                continue
+
+            if config['BASE']['sub_detection'] == "False":
+                # if no sub detection is necessary  we know at this point the right config name
+                return config, name
+            return config, None
+        return None, None
+
+    @staticmethod
+    def read_config(family: FundFamily, config_path):
+        if config_path:
+            config_path = os.path.join(config_path, "reader", "configs")
+        else:
+            config_path = os.path.join("reader", "configs")
+
+        search_word = f"{family.value.lower()}.ini"
+        file_list = glob.glob(config_path + '/*')
+        for file_path in file_list:
+            if not file_path.endswith(search_word):
+                continue
+
+            config = configparser.ConfigParser()
+            config.read(file_path)
+
+            EtfReaderConfigs.add_config(family, os.path.basename(file_path), config)
+
+    @staticmethod
+    def init_readers(config_path: str = None):
+        if len(EtfReaderFactory.READERS_CONFIGS) > 0:
+            return
+
+        for family, reader_class in EtfReaderFactory.READERS.items():
+            EtfReaderFactory.read_config(family, config_path)
+
+    @staticmethod
     def read_etfs_from_path(path, isin_filter):
         etfs = {}
+        EtfReaderFactory.init_readers()
+
         file_list = glob.glob(path + '/*')
         for file in file_list:
             try:
@@ -62,14 +112,6 @@ class EtfReaderFactory:
             return None
 
         r.read_asset()
-
-        if r.isin == EtfReader.NOT_EXIST:
-            log.warning(f"Could not get ISIN for {r.fpath}")
-            r.set_default_isin()
-
-        if r.asset.name == EtfReader.NOT_EXIST:
-            log.warning(f"Could not get Name for {r.fpath}")
-            r.set_default_name()
 
         if r.isin not in isin_filter and len(isin_filter) > 0:
             return None

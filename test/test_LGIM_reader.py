@@ -1,17 +1,17 @@
 from unittest import TestCase
 
-from reader.ishares_etf_reader import ISharesEtfReader
+from reader.lgim_etf_reader import LGIMEtfReader
 from test.test_basics import create_reader
 
 
 class TestLgimEtfReader(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.test_file1 = 'IWLE_holdings.csv'
+        cls.test_file1 = 'Fund-holdings_LG-Gerd-Kommer-Multifactor-Equity-UCITS-ETF-Gerd-Kommer-Multifactor-Equity-UCITS-ETF-USD-Acc_26-01-2024.csv'
 
     def test_reader_regex(self):
         reader = create_reader(self.test_file1)
-        self.assertEqual(type(reader), ISharesEtfReader)
+        self.assertEqual(type(reader), LGIMEtfReader)
 
     def test_read_sheet(self):
         reader = create_reader(self.test_file1)
@@ -23,6 +23,6 @@ class TestLgimEtfReader(TestCase):
     def test_read_asset(self):
         reader = create_reader(self.test_file1)
         reader.read_asset()
-        self.assertEqual('iShares Core MSCI World UCITS ETF', reader.asset.name)
-        self.assertEqual('IE00BKBF6H24', reader.asset.isin)
-        self.assertEqual('01.09.2023', reader.asset.last_history_date)
+        self.assertEqual('L&G Gerd Kommer Multifactor Equity UCITS ETF - USD Accumulating ETF', reader.asset.name)
+        self.assertEqual('IE0001UQQ933', reader.asset.isin)
+        self.assertEqual('25.01.2024', reader.asset.last_history_date)

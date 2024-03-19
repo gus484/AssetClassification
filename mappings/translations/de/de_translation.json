@@ -4,7 +4,7 @@
   "isin": "ISIN",
   "weight": "Gewichtung",
   "total_weight": "Gesamt-Gewichtung",
-  "companys": "Unternehmen",
+  "companies": "Unternehmen",
   "cluster_risk": "Klumpen",
   "regions": "Regionen",
   "nbr_of_holdings": "Anz. Positionen",
