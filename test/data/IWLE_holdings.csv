@@ -1,0 +1,12 @@
+﻿Fondsposition per,"01.Sep.2023"
+ 
+Emittententicker,Name,Sektor,Anlageklasse,Marktwert,Gewichtung (%),Nominalwert,Nominale,Kurs,Standort,Börse,Marktwährung
+"AAPL","APPLE INC","IT","Aktien","3.042.365.541,94","5,20","3.042.365.541,94","16.058.089,00","189,46","Vereinigte Staaten","NASDAQ","USD"
+"MSFT","MICROSOFT CORP","IT","Aktien","2.370.165.441,98","4,05","2.370.165.441,98","7.211.603,00","328,66","Vereinigte Staaten","NASDAQ","USD"
+"AMZN","AMAZON COM INC","Zyklische Konsumgüter ","Aktien","1.302.147.432,36","2,23","1.302.147.432,36","9.427.653,00","138,12","Vereinigte Staaten","NASDAQ","USD"
+"NVDA","NVIDIA CORP","IT","Aktien","1.223.255.333,72","2,09","1.223.255.333,72","2.521.708,00","485,09","Vereinigte Staaten","NASDAQ","USD"
+"GOOGL","ALPHABET INC CLASS A","Kommunikation","Aktien","822.831.214,38","1,41","822.831.214,38","6.065.393,00","135,66","Vereinigte Staaten","NASDAQ","USD"
+"GOOG","ALPHABET INC CLASS C","Kommunikation","Aktien","738.363.636,00","1,26","738.363.636,00","5.397.395,00","136,80","Vereinigte Staaten","NASDAQ","USD"
+"TSLA","TESLA INC","Zyklische Konsumgüter ","Aktien","713.538.457,83","1,22","713.538.457,83","2.912.283,00","245,01","Vereinigte Staaten","NASDAQ","USD"
+"META","META PLATFORMS INC CLASS A","Kommunikation","Aktien","669.365.338,60","1,14","669.365.338,60","2.258.470,00","296,38","Vereinigte Staaten","NASDAQ","USD"
+ 
