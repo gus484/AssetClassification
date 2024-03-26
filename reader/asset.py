@@ -1,3 +1,4 @@
+import datetime
 from dataclasses import dataclass, field
 from typing import Dict
 
@@ -18,7 +19,7 @@ class Asset:
     name: str
     isin: str
     weight: float
-    last_history_date: str
+    last_history_date: datetime.datetime
     values: list[Value]
     regions: Dict[str, region.Region] = field(default_factory=dict)
 
@@ -27,8 +28,4 @@ class Asset:
 
     def get_regions_sorted(self):
         return self.regions
-        #return dict(sorted(self.regions.items(), key=lambda x: x[1], reverse=True))
-
-
-
-
+        # return dict(sorted(self.regions.items(), key=lambda x: x[1], reverse=True))

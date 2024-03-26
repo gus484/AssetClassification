@@ -15,9 +15,8 @@ class LGIMEtfReader(EtfReader):
 
         self.isin = self.get_isin()
         date_obj = self.get_date()
-        last_update = date_obj.strftime('%d.%m.%Y')
 
-        self.asset = Asset(name, self.isin, 0.0, last_update, [])
+        self.asset = Asset(name, self.isin, 0.0, date_obj, [])
 
     def read_sheet(self):
         for i in range(self.start_row, self.get_row_count()):

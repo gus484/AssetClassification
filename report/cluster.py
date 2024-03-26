@@ -55,7 +55,7 @@ class ClusterReport(Report):
         c.nbr_of_cluster_positions = len(holdings)
         c.weight = assets[isin].weight
         c.nbr_of_holdings = assets[isin].get_num_values()
-        c.last_update = assets[isin].last_history_date
+        c.last_update = T.get_localized_date_str(assets[isin].last_history_date)
 
         # iterates over all holdings with cluster risk for ETF with isin
         for holding, data in holdings.items():

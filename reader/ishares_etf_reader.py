@@ -18,7 +18,6 @@ class ISharesEtfReader(EtfReader):
 
         file_name = os.path.basename(os.path.normpath(self.fpath))
         date_obj = self.get_date()
-        last_update = date_obj.strftime('%d.%m.%Y')
 
         '''      
                 if line_no == 3:
@@ -31,7 +30,7 @@ class ISharesEtfReader(EtfReader):
         self.isin = EtfReader.get_isin_from_file_name(self.fund_family, file_name)
         name = self.get_name()
 
-        self.asset = Asset(name, self.isin, 0.0, last_update, [])
+        self.asset = Asset(name, self.isin, 0.0, date_obj, [])
 
     def read_sheet(self):
         for i in range(self.start_row, self.get_row_count()):

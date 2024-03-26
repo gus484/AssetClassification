@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os.path
@@ -9,6 +10,7 @@ log = logging.getLogger("ac")
 class Translation:
     mapping = None
     path = None
+    lang = None
 
     @staticmethod
     def get_name(short):
@@ -37,6 +39,12 @@ class Translation:
         if os.path.exists(path) and os.path.isfile(path):
             Translation.path = path
             Translation.load_translation()
-
+            Translation.lang = lang
         else:
             log.debug("Language file %s not exists!", path)
+
+    @staticmethod
+    def get_localized_date_str(dt: datetime.datetime):
+        if Translation.lang == "de":
+            return dt.strftime('%d.%m.%Y')
+        return dt.strftime('%Y.%m.%d')
