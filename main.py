@@ -5,6 +5,7 @@ import queue
 import threading
 import time
 import tkinter
+import webbrowser
 from json import JSONDecodeError
 from tkinter import *
 from tkinter import filedialog, ttk
@@ -16,6 +17,7 @@ from ac import AssetAllocation
 from dialogs.dlgAbout import DlgAbout
 from dialogs.dlgAddIsin import DlgAddIsin
 from dialogs.dlgEtfLib import DlgEtfLib
+from report.report import Report
 from report.translation import Translation
 
 
@@ -40,6 +42,8 @@ class App:
         self.btn_run_script = None
 
         self.cb_mapping = None
+        self.cb_open_report = None
+        self.cb_open_report_var = 0
 
         self.img_add = None
         self.img_error = None
@@ -133,7 +137,7 @@ class App:
         self.w = ThemedTk(theme="arc")
         self.w.title(f"AssetAllocation (Ver. {self.version})")
         self.create_menu_bar()
-        self.w.geometry("770x430")
+        self.w.geometry("770x440")
 
         self.load_images()
 
@@ -164,6 +168,7 @@ class App:
 
         fb = Frame(master=self.w)
         self.create_run_button(fb)
+        self.create_report_open_cb(fb)
         self.create_progress_bar(fb)
         fb.pack(side='bottom')
 
@@ -202,6 +207,15 @@ class App:
 
     def show_log_file(self):
         os.startfile(self.LOG_FILE_PATH)
+
+    def show_report(self):
+        report_page_path = self.target_path.get() + '/' + Report.HTML_FILES.get(Report.HTML_ABOUT)
+
+        if not self.cb_open_report_var.get():
+            return
+
+        if os.path.exists(report_page_path):
+            webbrowser.open_new_tab('file:///' + report_page_path)
 
     def create_isin_filter(self, parent_frame: Frame):
         r1 = Frame(parent_frame)
@@ -306,6 +320,17 @@ class App:
         btn_pp_path.pack(side="left")
         f.pack()
 
+    def create_report_open_cb(self, parent_frame: Frame):
+        f = Frame(master=parent_frame, pady=0)
+
+        ttk.Style().configure("TCheckbutton", selectbackground=None, selectforeground=None)
+        self.cb_open_report_var = IntVar()
+        self.cb_open_report = ttk.Checkbutton(f, text=Translation.get_name('open_report'), width=15,
+                                              variable=self.cb_open_report_var)
+        self.cb_open_report.pack()
+
+        f.pack()
+
     def create_run_button(self, parent_frame: Frame):
         f = Frame(master=parent_frame, pady=5)
 
@@ -354,6 +379,7 @@ class App:
         Translation.set_language(language)
         self.language_code = language
         self.btn_run_script.config(text=Translation.get_name('run_script'))
+        self.cb_open_report.config(text=Translation.get_name("open_report"))
         self.lb_target_path.config(text=Translation.get_name('report_path'))
         self.lb_source_path.config(text=Translation.get_name('input_path'))
         self.lb_language.config(text=Translation.get_name('region_mapping'))
@@ -410,6 +436,7 @@ class App:
         ac.run()
 
         self.btn_run_script['state'] = tkinter.NORMAL
+        self.show_report()
 
     def format_log_message(self, message) -> list:
         lvl_idx = message.find(":")

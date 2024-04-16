@@ -25,5 +25,6 @@
   "log_file": "Log-Datei",
   "log_messages": "Log-Nachrichten",
   "NO_SRC_PATH": "Quellpfad wurde nicht angegeben oder existiert nicht!",
-  "NO_TARGET_PATH": "Zielpfad wurde nicht angegeben oder existiert nicht!"
+  "NO_TARGET_PATH": "Zielpfad wurde nicht angegeben oder existiert nicht!",
+  "open_report": "Report öffnen"
 }
