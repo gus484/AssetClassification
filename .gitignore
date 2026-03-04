@@ -3,8 +3,26 @@ asset.log
 out/
 
 # Environments
-venv/
+venv/*
 
 # IDEs
 .idea/
 nbproject/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyd
+
+# Pytest cache
+.pytest_cache/
+
+# MyPy cache
+.mypy_cache/
+
+# Coverage data
+.coverage
+
+# General cache
+.cache/
+
