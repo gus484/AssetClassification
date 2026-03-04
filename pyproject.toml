@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "assetclassification"
+version = "0.2.0"
+description = "Python script to determine cluster risk of ETFs and generate reports."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "gus484", email = "gus484@gmail.com" }
+]
+dependencies = [
+    "dateparser",
+    "openpyxl",
+    "ttkthemes",
+    "ruff",
+    "black"
+]
